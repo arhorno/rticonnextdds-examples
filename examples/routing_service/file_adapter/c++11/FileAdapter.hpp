@@ -22,12 +22,12 @@
 namespace rti { namespace community { namespace examples {
 class FileAdapter : public rti::routing::adapter::AdapterPlugin {
 public:
-    explicit FileAdapter(rti::routing::PropertySet &);
+    explicit FileAdapter(rti::routing::PropertySet&);
 
     rti::routing::adapter::Connection *create_connection(
             rti::routing::adapter::detail::StreamReaderListener *,
             rti::routing::adapter::detail::StreamReaderListener *,
-            const rti::routing::PropertySet &) final;
+            const rti::routing::PropertySet&) final;
 
     void delete_connection(rti::routing::adapter::Connection *connection) final;
 
@@ -44,7 +44,7 @@ public:
  * The generated symbol has the name:
  *
  * \code
- * FileAdapterPlugin_create_adapter_plugin
+ * FileAdapter_create_adapter_plugin
  * \endcode
  */
 RTI_ADAPTER_PLUGIN_CREATE_FUNCTION_DECL(FileAdapter)

@@ -9,15 +9,15 @@
  any incidental or consequential damages arising out of the use or inability to
  use the software.
  -->
-<dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-        xsi:noNamespaceSchemaLocation="https://community.rti.com/schema/latest/rti_routing_service.xsd">
-    <!-- Make sure this path is correctly set into your system, otherwise it 
+<dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://community.rti.com/schema/7.0.0/rti_routing_service.xsd">
+    <!-- Make sure this path is correctly set into your system, otherwise it
        wouldn't affect the execution, but autocompletion wouldn't work -->
 
     <!-- Adapter entry points are defined here -->
     <adapter_library name="adapters">
         <adapter_plugin name="file">
-            <dll>fileadapter</dll>
+            <dll>FileAdapterC</dll>
             <create_function>RTI_RoutingServiceFileAdapterPlugin_create</create_function>
         </adapter_plugin>
     </adapter_library>
@@ -29,7 +29,7 @@
         <annotation>
             <documentation>
                 This application scans one folder in the file system,
-                and for every new file discovered, creates a stream and copies 
+                and for every new file discovered, creates a stream and copies
                 the content of the file to the other connection
             </documentation>
         </annotation>
@@ -39,18 +39,18 @@
                 <property>
                     <value>
                         <element>
-                            <!-- This property it is to indicate whether the 
+                            <!-- This property it is to indicate whether the
 		                        connection is used as input or output connection -->
                             <name>Direction</name>
                             <value>Input</value>
                         </element>
                         <element>
-                            <!-- This is the path of the input directory, the directory that will 
+                            <!-- This is the path of the input directory, the directory that will
 		                        be scanned to check for file present to copy to the other side -->
                             <name>FolderPath</name>
                             <value>$(INPUT_DIRECTORY)</value>
                         </element>
-                        <!-- This property specifies how often you are going to check 
+                        <!-- This property specifies how often you are going to check
 		                    inside the input folder if there are new files -->
                         <element>
                             <name>SleepPeriod</name>
@@ -67,7 +67,7 @@
                             <value>Output</value>
                         </element>
                         <element>
-                            <!-- This is the path of the output directory, where the discovered 
+                            <!-- This is the path of the output directory, where the discovered
 		                        files will be copied -->
                             <name>FolderPath</name>
                             <value>$(OUTPUT_DIRECTORY)</value>
@@ -100,7 +100,7 @@
                         <creation_mode>ON_ROUTE_MATCH</creation_mode>
                         <property>
                             <value>
-                                <!-- The write mode can be: 
+                                <!-- The write mode can be:
                                         - overwrite (write in the file deleting previous content)
                                         - append (write at then end of the file)
                                         - keep (fail if the file already exists and don't modify it)

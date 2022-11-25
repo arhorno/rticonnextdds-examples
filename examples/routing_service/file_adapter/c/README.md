@@ -1,7 +1,7 @@
 # Example Code: Routing Service File Adapter
 
 ## Example Description
-
+<!-- TODO: include changes here -->
 This example shows how to create a simple adapter using the RTI Routing Service
 Adapter SDK in C. The adapter scans the file system for one specific folder
 defined in the XML configuration file. For every file present in that folder,

@@ -24,6 +24,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define STRINGSIZE 256
+
 /* ========================================================================= */
 /*                                                                           */
 /* Read line                                                                 */

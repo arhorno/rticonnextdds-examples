@@ -37,8 +37,8 @@
 DDS_TypeCode *RTI_RoutingServiceFileAdapter_create_type_code()
 {
     struct DDS_TypeCodeFactory *factory = NULL;
-    struct DDS_TypeCode *sequence_tc = NULL; /* type code for octet */
-    struct DDS_TypeCode *struct_tc = NULL;   /* Top-level typecode */
+    struct DDS_TypeCode *string_tc = NULL; /* typecode for color string */
+    struct DDS_TypeCode *struct_tc = NULL; /* Top-level typecode */
     struct DDS_StructMemberSeq member_seq = DDS_SEQUENCE_INITIALIZER;
     DDS_ExceptionCode_t ex = DDS_NO_EXCEPTION_CODE;
 
@@ -49,15 +49,11 @@ DDS_TypeCode *RTI_RoutingServiceFileAdapter_create_type_code()
         goto done;
     }
 
-    /* create a sequence for DDS_Octet, so we use a general type */
-    sequence_tc = DDS_TypeCodeFactory_create_sequence_tc(
-            factory,
-            MAX_PAYLOAD_SIZE,
-            DDS_TypeCodeFactory_get_primitive_tc(factory, DDS_TK_OCTET),
-            &ex);
+    /* create string typecode */
+    string_tc = DDS_TypeCodeFactory_create_string_tc(factory, STRINGSIZE, &ex);
     if (ex != DDS_NO_EXCEPTION_CODE) {
         fprintf(stderr,
-                "ERROR: Unable to create 'payload' sequence typecode:"
+                "ERROR: Unable to create string typecode:"
                 " %d\n",
                 ex);
         goto done;
@@ -66,7 +62,7 @@ DDS_TypeCode *RTI_RoutingServiceFileAdapter_create_type_code()
     /* create top-level typecode */
     struct_tc = DDS_TypeCodeFactory_create_struct_tc(
             factory,
-            "TextLine",
+            "ShapeType",
             &member_seq,
             &ex);
     if (ex != DDS_NO_EXCEPTION_CODE) {
@@ -76,9 +72,9 @@ DDS_TypeCode *RTI_RoutingServiceFileAdapter_create_type_code()
 
     DDS_TypeCode_add_member(
             struct_tc,
-            "value",
+            "color",
             DDS_MEMBER_ID_INVALID,
-            sequence_tc,
+            string_tc,
             DDS_TYPECODE_NONKEY_MEMBER,
             &ex);
     if (ex != DDS_NO_EXCEPTION_CODE) {
@@ -87,14 +83,56 @@ DDS_TypeCode *RTI_RoutingServiceFileAdapter_create_type_code()
                 ex);
         goto done;
     }
-    if (sequence_tc != NULL) {
-        DDS_TypeCodeFactory_delete_tc(factory, sequence_tc, &ex);
+
+    DDS_TypeCode_add_member(
+            struct_tc,
+            "x",
+            DDS_MEMBER_ID_INVALID,
+            DDS_TypeCodeFactory_get_primitive_tc(factory, DDS_TK_LONG),
+            DDS_TYPECODE_NONKEY_MEMBER,
+            &ex);
+    if (ex != DDS_NO_EXCEPTION_CODE) {
+        fprintf(stderr,
+                "Error adding member to struct typecode, error=%d\n",
+                ex);
+        goto done;
+    }
+    DDS_TypeCode_add_member(
+            struct_tc,
+            "y",
+            DDS_MEMBER_ID_INVALID,
+            DDS_TypeCodeFactory_get_primitive_tc(factory, DDS_TK_LONG),
+            DDS_TYPECODE_NONKEY_MEMBER,
+            &ex);
+    if (ex != DDS_NO_EXCEPTION_CODE) {
+        fprintf(stderr,
+                "Error adding member to struct typecode, error=%d\n",
+                ex);
+        goto done;
+    }
+    DDS_TypeCode_add_member(
+            struct_tc,
+            "shapesize",
+            DDS_MEMBER_ID_INVALID,
+            DDS_TypeCodeFactory_get_primitive_tc(factory, DDS_TK_LONG),
+            DDS_TYPECODE_NONKEY_MEMBER,
+            &ex);
+    if (ex != DDS_NO_EXCEPTION_CODE) {
+        fprintf(stderr,
+                "Error adding member to struct typecode, error=%d\n",
+                ex);
+        goto done;
+    }
+
+
+    if (string_tc != NULL) {
+        DDS_TypeCodeFactory_delete_tc(factory, string_tc, &ex);
     }
     return struct_tc;
 
 done:
-    if (sequence_tc != NULL) {
-        DDS_TypeCodeFactory_delete_tc(factory, sequence_tc, &ex);
+    if (string_tc != NULL) {
+        DDS_TypeCodeFactory_delete_tc(factory, string_tc, &ex);
     }
     if (struct_tc != NULL) {
         DDS_TypeCodeFactory_delete_tc(factory, struct_tc, &ex);
@@ -333,7 +371,6 @@ void RTI_RoutingServiceFileStreamReader_read(
         *sample_list = NULL;
     }
 }
-
 
 /*****************************************************************************/
 
@@ -1029,4 +1066,5 @@ RTI_RoutingServiceFileAdapterPlugin_create(
 
     return (struct RTI_RoutingServiceAdapterPlugin *) adapter;
 }
+
 #undef ROUTER_CURRENT_SUBMODULE

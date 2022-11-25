@@ -32,32 +32,76 @@ int RTI_RoutingServiceFileAdapter_read_sample(
     long data_read = 0;
     DDS_ReturnCode_t retCode = DDS_RETCODE_OK;
 
-    DDS_OctetSeq_initialize(&payload_sequence);
-    DDS_OctetSeq_ensure_length(
-            &payload_sequence,
-            MAX_PAYLOAD_SIZE,
-            MAX_PAYLOAD_SIZE);
-    ptr_payload = DDS_OctetSeq_get_contiguous_buffer(&payload_sequence);
-    data_read = fread(ptr_payload, 1, MAX_PAYLOAD_SIZE, file);
-    if (data_read == 0) {
-        if (ferror(file)) {
-            fprintf(stderr, "ERROR: reading file\n");
-            return 0;
-        }
-    }
-    DDS_OctetSeq_ensure_length(&payload_sequence, data_read, MAX_PAYLOAD_SIZE);
-    DDS_DynamicData_set_octet_seq(
-            sampleOut,
-            "value",
-            DDS_DYNAMIC_DATA_MEMBER_ID_UNSPECIFIED,
-            &payload_sequence);
+    char c_read;
+    int c_count = 0;
+    char *color;
+    DDS_Long x;
+    DDS_Long y;
+    DDS_Long shapesize;
 
-    if (retCode != DDS_RETCODE_OK) {
-        DDS_OctetSeq_finalize(&payload_sequence);
-        return 0;
+
+    /*Retrieve data from file*/
+
+    color = malloc(STRINGSIZE);
+    c_read = fgetc(file);
+    while (c_read != ',') {
+        if (c_count < STRINGSIZE) {
+            color[c_count] = c_read;
+        } else {
+            fprintf(stderr,
+                    "error reading color, not enough memory reserved\n");
+            return DDS_BOOLEAN_FALSE;
+        }
+        c_count++;
+        c_read = fgetc(file);
     }
-    DDS_OctetSeq_finalize(&payload_sequence);
-    return 1;
+    if (fscanf(file, "%d,%d,%d\n", &x, &y, &shapesize) < 0) {
+        fprintf(stderr, "error reading sample");
+        return DDS_BOOLEAN_FALSE;
+    }
+
+    if (DDS_DynamicData_set_string(
+                sampleOut,
+                "color",
+                DDS_DYNAMIC_DATA_MEMBER_ID_UNSPECIFIED,
+                color)
+        != DDS_RETCODE_OK) {
+        fprintf(stderr, "Error setting value color\n");
+        return DDS_BOOLEAN_FALSE;
+    }
+
+    if (DDS_DynamicData_set_long(
+                sampleOut,
+                "x",
+                DDS_DYNAMIC_DATA_MEMBER_ID_UNSPECIFIED,
+                x)
+        != DDS_RETCODE_OK) {
+        fprintf(stderr, "Error getting value x\n");
+        return DDS_BOOLEAN_FALSE;
+    }
+
+    if (DDS_DynamicData_set_long(
+                sampleOut,
+                "y",
+                DDS_DYNAMIC_DATA_MEMBER_ID_UNSPECIFIED,
+                y)
+        != DDS_RETCODE_OK) {
+        fprintf(stderr, "Error getting value y\n");
+        return DDS_BOOLEAN_FALSE;
+    }
+
+    if (DDS_DynamicData_set_long(
+                sampleOut,
+                "shapesize",
+                DDS_DYNAMIC_DATA_MEMBER_ID_UNSPECIFIED,
+                shapesize)
+        != DDS_RETCODE_OK) {
+        fprintf(stderr, "Error getting value shapesize\n");
+        return DDS_BOOLEAN_FALSE;
+    }
+
+    free(color);
+    return DDS_BOOLEAN_TRUE;
 }
 
 /* ========================================================================= */
@@ -71,30 +115,68 @@ int RTI_RoutingServiceFileAdapter_write_sample(
         FILE *file,
         RTI_RoutingServiceEnvironment *env)
 {
-    DDS_ReturnCode_t retCode = DDS_RETCODE_OK;
-    struct DDS_DynamicDataMemberInfo info;
-    DDS_UnsignedLong ulongValue = 0;
-    DDS_Octet *ptr_payload = NULL;
-    struct DDS_OctetSeq payload;
-    DDS_Long sample_length = 0;
+    char *color;
+    DDS_UnsignedLong size_of_color = STRINGSIZE;
+    DDS_Long x;
+    DDS_Long y;
+    DDS_Long shapesize;
 
-    DDS_OctetSeq_initialize(&payload);
 
-    DDS_DynamicData_get_octet_seq(
-            sample,
-            &payload,
-            "value",
-            DDS_DYNAMIC_DATA_MEMBER_ID_UNSPECIFIED);
+    /* The file format is:
+     * <color>,<x>,<y>,<shapesize>
+     * Each line represents a sample
+     */
 
-    sample_length = DDS_OctetSeq_get_length(&payload);
-    ptr_payload = DDS_OctetSeq_get_contiguous_buffer(&payload);
-    /*it  writes the retrieved string to the file*/
-    if (retCode == DDS_RETCODE_OK) {
-        if (fwrite(ptr_payload, 1, sample_length, file) < sample_length) {
-            return 0;
-        }
+    /*Retrieve the sample values*/
+    color = malloc(size_of_color);
+    if (DDS_DynamicData_get_string(
+                sample,
+                &color,
+                &size_of_color,
+                "color",
+                DDS_DYNAMIC_DATA_MEMBER_ID_UNSPECIFIED)
+        != DDS_RETCODE_OK) {
+        fprintf(stderr, "Error getting value color\n");
+        return DDS_BOOLEAN_FALSE;
     }
-    DDS_OctetSeq_finalize(&payload);
 
-    return 1;
+    if (DDS_DynamicData_get_long(
+                sample,
+                &x,
+                "x",
+                DDS_DYNAMIC_DATA_MEMBER_ID_UNSPECIFIED)
+        != DDS_RETCODE_OK) {
+        fprintf(stderr, "Error getting value x\n");
+        return DDS_BOOLEAN_FALSE;
+    }
+
+    if (DDS_DynamicData_get_long(
+                sample,
+                &y,
+                "y",
+                DDS_DYNAMIC_DATA_MEMBER_ID_UNSPECIFIED)
+        != DDS_RETCODE_OK) {
+        fprintf(stderr, "Error getting value y\n");
+        return DDS_BOOLEAN_FALSE;
+    }
+
+    if (DDS_DynamicData_get_long(
+                sample,
+                &shapesize,
+                "shapesize",
+                DDS_DYNAMIC_DATA_MEMBER_ID_UNSPECIFIED)
+        != DDS_RETCODE_OK) {
+        fprintf(stderr, "Error getting value shapesize\n");
+        return DDS_BOOLEAN_FALSE;
+    }
+
+
+    /*Write the retrieved values into the opened file*/
+    if (fprintf(file, "%s,%d,%d,%d\n", color, x, y, shapesize) < 0) {
+        fprintf(stderr, "Error writing on the file\n");
+        return DDS_BOOLEAN_FALSE;
+    }
+
+    free(color);
+    return DDS_BOOLEAN_TRUE;
 }
