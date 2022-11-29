@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.11)
 project(FileAdapterC++11)
 
 if(NOT DEFINED CONNEXTDDS_DIR)
-    set(msg 
+    set(msg
         "Please set the CMake variable CONNEXTDDS_DIR "
         "to point to your installation of RTI Connext DDS")
     message(FATAL_ERROR ${msg})

@@ -13,7 +13,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "data_structures.h"
 #include "line_conversion.h"
 
 /* ========================================================================= */
@@ -24,21 +23,14 @@
 
 int RTI_RoutingServiceFileAdapter_read_sample(
         struct DDS_DynamicData *sampleOut,
-        FILE *file,
-        RTI_RoutingServiceEnvironment *env)
+        FILE *file)
 {
-    DDS_Octet *ptr_payload = NULL;
-    struct DDS_OctetSeq payload_sequence;
-    long data_read = 0;
-    DDS_ReturnCode_t retCode = DDS_RETCODE_OK;
-
     char c_read;
     int c_count = 0;
     char *color;
     DDS_Long x;
     DDS_Long y;
     DDS_Long shapesize;
-
 
     /*Retrieve data from file*/
 
@@ -55,6 +47,8 @@ int RTI_RoutingServiceFileAdapter_read_sample(
         c_count++;
         c_read = fgetc(file);
     }
+    color[c_count] = '\0';
+
     if (fscanf(file, "%d,%d,%d\n", &x, &y, &shapesize) < 0) {
         fprintf(stderr, "error reading sample");
         return DDS_BOOLEAN_FALSE;

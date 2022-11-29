@@ -34,9 +34,7 @@
 
 int RTI_RoutingServiceFileAdapter_read_sample(
         struct DDS_DynamicData *sampleOut,
-        FILE *file,
-        RTI_RoutingServiceEnvironment *env);
-
+        FILE *file);
 
 /* ========================================================================= */
 /*                                                                           */

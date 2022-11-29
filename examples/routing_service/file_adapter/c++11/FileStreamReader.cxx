@@ -28,12 +28,12 @@ const std::string FileStreamReader::INPUT_FILE_PROPERTY_NAME =
 const std::string FileStreamReader::SAMPLE_PERIOD_PROPERTY_NAME =
         "example.adapter.sample_period_sec";
 
-bool FileStreamReader::check_csv_file_line_format(const std::string &line)
+bool FileStreamReader::check_csv_file_line_format(const std::string& line)
 {
     return (!line.empty()) && (std::count(line.begin(), line.end(), ',') == 3);
 }
 
-bool FileStreamReader::is_digit(const std::string &value)
+bool FileStreamReader::is_digit(const std::string& value)
 {
     return std::find_if(
                    value.begin(),
@@ -76,8 +76,8 @@ void FileStreamReader::file_reading_thread()
 
 FileStreamReader::FileStreamReader(
         FileConnection *connection,
-        const StreamInfo &info,
-        const PropertySet &properties,
+        const StreamInfo& info,
+        const PropertySet& properties,
         StreamReaderListener *listener)
         : sampling_period_(1),
           stop_thread_(false),
@@ -89,7 +89,7 @@ FileStreamReader::FileStreamReader(
             static_cast<DynamicType *>(info.type_info().type_representation());
 
     // Parse the properties provided in the xml configuration file
-    for (const auto &property : properties) {
+    for (const auto& property : properties) {
         if (property.first == INPUT_FILE_PROPERTY_NAME) {
             input_file_name_ = property.second;
             input_file_stream_.open(property.second);
@@ -113,8 +113,8 @@ FileStreamReader::FileStreamReader(
 }
 
 void FileStreamReader::take(
-        std::vector<dds::core::xtypes::DynamicData *> &samples,
-        std::vector<dds::sub::SampleInfo *> &infos)
+        std::vector<dds::core::xtypes::DynamicData *>& samples,
+        std::vector<dds::sub::SampleInfo *>& infos)
 {
     /**
      * This protection is required since take() executes on a different
@@ -168,16 +168,16 @@ void FileStreamReader::take(
 }
 
 void FileStreamReader::take(
-        std::vector<dds::core::xtypes::DynamicData *> &samples,
-        std::vector<dds::sub::SampleInfo *> &infos,
-        const SelectorState &selector_state)
+        std::vector<dds::core::xtypes::DynamicData *>& samples,
+        std::vector<dds::sub::SampleInfo *>& infos,
+        const SelectorState& selector_state)
 {
     take(samples, infos);
 }
 
 void FileStreamReader::return_loan(
-        std::vector<dds::core::xtypes::DynamicData *> &samples,
-        std::vector<dds::sub::SampleInfo *> &infos)
+        std::vector<dds::core::xtypes::DynamicData *>& samples,
+        std::vector<dds::sub::SampleInfo *>& infos)
 {
     for (int i = 0; i < samples.size(); ++i) {
         delete samples[i];

@@ -42,7 +42,6 @@ find_package(
 )
 
 add_library(${PROJECT_NAME}
-    "${CMAKE_CURRENT_SOURCE_DIR}/directory_reading.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/line_conversion.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/file_adapter.c"
 )
