@@ -35,8 +35,8 @@ In order to build this example, you need to provide the following variables to
 - `CONNEXTDDS_ARCH`
 
 ```bash
-$mkdir build
-$cmake -DCONNEXTDDS_DIR=<Connext DDS Directory>
+mkdir build
+cmake -DCONNEXTDDS_DIR=<Connext DDS Directory>
     -DCONNEXTDDS_ARCH=<Connext DDS Architecture>
     -DBUILD_SHARED_LIBS=ON|OFF
     -DCMAKE_BUILD_TYPE=Debug|Release ..
@@ -78,6 +78,10 @@ Possible values for ```SHAPE_TOPIC``` are:
 - Square
 - Circle
 - Triangle
+
+```bash
+set SHAPE_TOPIC=Triangle
+```
 
 You have 3 different configurations (cfgName) to choose from:
 
@@ -161,18 +165,19 @@ Received Sample:
 **Note**: when running on Windows systems, remove the quotes from the value of
 the ``SHAPE_TOPIC`` environment variable.
 
-```bash
-set SHAPE_TOPIC=Triangle
 
-The general behavior of this example, can be controlled using properties and the
+The general behavior of this example can be controlled using properties and the
 ```SHAPE_TOPIC``` environment variable. You can modify properties in the Routing
 Service configuration file. This is the list of available properties:
 
-| Property                            | Tag        | Description                                                                                   |
-| ----------------------------------- | ---------- | ----------------------------------------------------------------------------------------------|
-| `example.adapter.input_file`        | `<input>`  | Path to a CSV file that contains the sample data. File must exist and contain valid CSV data. |
-| `example.adapter.sample_period_sec` | `<input>`  | Periodic rate of reading samples from the file                                                |
-| `example.adapter.output_file`       | `<output>` | Path to the file where to store the received samples                                          |
+| Property                                 | Tag        | Description                                                                                   |
+| ---------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------|
+| `example.adapter.input_file`             | `<input>`  | Path to a CSV file that contains the sample data. File must exist and contain valid CSV data. |
+| `example.adapter.sample_period_millisec` | `<input>`  | Periodic rate of reading samples from the file                                                |
+| `example.adapter.sample_period_loop`     | `<input>`  | Whether to restart reading at the beginning of the file when it reach the                     |
+| `example.adapter.output_file`            | `<output>` | Path to the file where to store the received samples                                          |
+| `example.adapter.write_mode`             | `<output>` | The write mode can be:<ul><li>overwrite (write in the file deleting previous content)</li><li>append (write at then end of the file)</li><li>keep (fail if the file already exists and don't modify it)</li></ul>|
+| `example.adapter.flush`                  | `<output>` | Whether to flush the file after every sample is written.                                      |
 
 ## Requirements
 

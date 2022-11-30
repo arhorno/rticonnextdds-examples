@@ -9,7 +9,7 @@
     <plugin_library name="AdapterLib">
         <adapter_plugin name="FileAdapter">
             <!--
-            By specifing this value, RTI Router will search for
+            By specifing this value, RTI Routing Service will search for
             libfileadapter.so in Unix systems, fileadapter.dll on
             Windows systems and libfileadapter.dylib on Mac OS.
             RTI Routing Service will attempt to load this library from:
@@ -42,10 +42,12 @@
                         <stream_name>$(SHAPE_TOPIC)</stream_name>
                         <property>
                             <value>
+                                <!-- The file from which to read -->
                                 <element>
                                     <name>example.adapter.input_file</name>
                                     <value>Input_$(SHAPE_TOPIC).csv</value>
                                 </element>
+                                <!-- How often we read samples from the file (ms) -->
                                 <element>
                                     <name>example.adapter.sample_period_millisec</name>
                                     <value>1000</value>
@@ -119,10 +121,12 @@
                         <stream_name>$(SHAPE_TOPIC)</stream_name>
                         <property>
                             <value>
+                                <!-- The file from which to read -->
                                 <element>
                                     <name>example.adapter.input_file</name>
                                     <value>Input_$(SHAPE_TOPIC).csv</value>
                                 </element>
+                                <!-- How often we read samples from the file (ms) -->
                                 <element>
                                     <name>example.adapter.sample_period_millisec</name>
                                     <value>1000</value>

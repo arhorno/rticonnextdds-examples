@@ -33,22 +33,19 @@
     <routing_service name="file_to_file">
         <annotation>
             <documentation>
-                This application scans one folder in the file system,
-                and for every new file discovered, creates a stream and copies
-                the content of the file to the other connection
+                This configuration takes a file as plugin property, reads its contents\
+                and place them in another file using the C adapter.
             </documentation>
         </annotation>
 
         <domain_route>
             <connection name="1" plugin_name="adapters::file">
-                <registered_type name="ShapeType" type_name="ShapeType"/>
-            </connection>
-            <connection name="2" plugin_name="adapters::file">
+                <!-- Types must be registered in connections AND inputs/outputs using them-->
                 <registered_type name="ShapeType" type_name="ShapeType"/>
             </connection>
 
             <session name="ff">
-                <route name="ddsdds">
+                <route name="filefile">
                     <input connection="1">
                         <creation_mode>IMMEDIATE</creation_mode>
                         <registered_type_name>ShapeType</registered_type_name>
@@ -67,7 +64,7 @@
                         </property>
                     </input>
 
-                    <output connection="2">
+                    <output connection="1">
                         <registered_type_name>ShapeType</registered_type_name>
                         <creation_mode>ON_ROUTE_MATCH</creation_mode>
                         <property>
@@ -109,11 +106,11 @@
 
         <domain_route name="filedds">
 
-            <connection name="1" plugin_name="adapters::file">
+            <connection name="in" plugin_name="adapters::file">
                 <registered_type name="ShapeType" type_name="ShapeType"/>
             </connection>
 
-            <participant name="2">
+            <participant name="out">
                 <domain_id>0</domain_id>
                 <!-- Registered types must be defined in both the connection/participant
                     and inputs/outputs where it is used-->
@@ -124,7 +121,7 @@
                 <!-- This route gets ShapeType samples from the file Input_$(SHAPE_TOPIC).csv
 		            and publishes them in DDS -->
 	        	<route name="shapes_file">
-                    <input connection="1">
+                    <input connection="in">
                         <!-- We only start reading when the output
 			                is ready to write -->
                         <creation_mode>ON_ROUTE_MATCH</creation_mode>
@@ -152,7 +149,7 @@
                         </property>
                     </input>
 
-                    <dds_output participant="2">
+                    <dds_output participant="out">
                         <!-- We only start writing when we have a DDS data reader
 			                expecting our topic -->
                         <creation_mode>ON_DOMAIN_MATCH</creation_mode>
@@ -172,11 +169,6 @@
                 Subscribes to shapes using dds and writes the samples in a csv
             </documentation>
         </annotation>
-
-        <administration>
-            <domain_id>0</domain_id>
-        </administration>
-
 
         <domain_route name="ddsfile">
 
