@@ -55,18 +55,13 @@
                         <property>
                             <value>
                                 <element>
-                                    <name>FileName</name>
-                                    <value>Input_Square.csv</value>
+                                    <name>example.adapter.input_file</name>
+                                    <value>Input_$(SHAPE_TOPIC).csv</value>
                                 </element>
                                 <!-- How often we read samples from the file (ms) -->
                                 <element>
-                                    <name>ReadPeriod</name>
+                                    <name>example.adapter.sample_period_millisec</name>
                                     <value>1000</value>
-                                </element>
-                                <!-- How many samples we will take from the file every ReadPeriod -->
-                                <element>
-                                    <name>SamplesPerRead</name>
-                                    <value>1</value>
                                 </element>
                             </value>
                         </property>
@@ -78,8 +73,8 @@
                         <property>
                             <value>
                                 <element>
-                                    <name>FileName</name>
-                                    <value>out_square.csv</value>
+                                    <name>example.adapter.output_file</name>
+                                    <value>Output_$(SHAPE_TOPIC).csv</value>
                                 </element>
                                 <!-- The write mode can be:
                                         - overwrite (write in the file deleting previous content)
@@ -87,12 +82,12 @@
                                         - keep (fail if the file already exists and don't modify it)
                                 -->
                                 <element>
-                                    <name>WriteMode</name>
+                                    <name>example.adapter.write_mode</name>
                                     <value>overwrite</value>
                                 </element>
                                 <!-- Whether to flush the file after every sample is written. -->
                                 <element>
-                                    <name>Flush</name>
+                                    <name>example.adapter.flush</name>
                                     <value>1</value>
                                 </element>
                             </value>
@@ -112,11 +107,6 @@
             </documentation>
         </annotation>
 
-        <administration>
-            <domain_id>128</domain_id>
-        </administration>
-
-
         <domain_route name="filedds">
 
             <connection name="1" plugin_name="adapters::file">
@@ -124,51 +114,39 @@
             </connection>
 
             <participant name="2">
-                <domain_id>128</domain_id>
+                <domain_id>0</domain_id>
                 <!-- Registered types must be defined in both the connection/participant
                     and inputs/outputs where it is used-->
                 <registered_type name="ShapeType" type_name="ShapeType"/>
             </participant>
 
             <session name="filedds">
-                <!-- This route gets ShapeType samples from the file MySquare.txt
+                <!-- This route gets ShapeType samples from the file Input_$(SHAPE_TOPIC).csv
 		            and publishes them in DDS -->
 	        	<route name="shapes_file">
                     <input connection="1">
                         <!-- We only start reading when the output
 			                is ready to write -->
                         <creation_mode>ON_ROUTE_MATCH</creation_mode>
-                        <stream_name>Square</stream_name>
+                        <stream_name>$(SHAPE_TOPIC)</stream_name>
 			            <registered_type_name>ShapeType</registered_type_name>
                         <property>
                             <value>
                                 <!-- The file from which to read -->
                                 <element>
-                                    <name>FileName</name>
-                                    <value>Input_Square.csv</value>
+                                    <name>example.adapter.input_file</name>
+                                    <value>Input_$(SHAPE_TOPIC).csv</value>
                                 </element>
                                 <!-- How often we read samples from the file (ms) -->
                                 <element>
-                                    <name>ReadPeriod</name>
+                                    <name>example.adapter.sample_period_millisec</name>
                                     <value>500</value>
-                                </element>
-                                <!-- How many samples we will take from the
-				                    file every ReadPeriod -->
-                                <element>
-                                    <name>SamplesPerRead</name>
-                                    <value>1</value>
                                 </element>
                                  <!-- Whether to start over from the beginning
                                 of the file when the EOF is reached -->
                                 <element>
-                                    <name>Loop</name>
+                                    <name>example.adapter.loop</name>
                                     <value>0</value>
-                                </element>
-                                <!-- The maximum size in bytes of
-                                a portion of file representing a sample -->
-                                <element>
-                                    <name>MaxSampleSize</name>
-                                    <value>1024</value>
                                 </element>
                             </value>
                         </property>
@@ -178,7 +156,7 @@
                         <!-- We only start writing when we have a DDS data reader
 			                expecting our topic -->
                         <creation_mode>ON_DOMAIN_MATCH</creation_mode>
-			            <topic_name>Square</topic_name>
+			            <topic_name>$(SHAPE_TOPIC)</topic_name>
 			            <registered_type_name>ShapeType</registered_type_name>
                     </dds_output>
 
@@ -196,7 +174,7 @@
         </annotation>
 
         <administration>
-            <domain_id>128</domain_id>
+            <domain_id>0</domain_id>
         </administration>
 
 
@@ -207,19 +185,19 @@
             </connection>
 
             <participant name="part1">
-                <domain_id>128</domain_id>
+                <domain_id>0</domain_id>
             </participant>
 
             <session name="session1">
-                <!-- This route gets ShapeType samples from the file MySquare.txt
-		            and publishes them in DDS -->
+                <!-- This route gets ShapeType samples from DDS
+		            and writes them in the file Output_$(SHAPE_TOPIC).csv -->
 	        	<route name="shapes_file">
 
                     <dds_input participant="part1">
                         <!-- We only start writing when we have a DDS data reader
 			                expecting our topic -->
                         <creation_mode>ON_DOMAIN_MATCH</creation_mode>
-                        <topic_name>Square</topic_name>
+                        <topic_name>$(SHAPE_TOPIC)</topic_name>
                         <registered_type_name>ShapeType</registered_type_name>
                     </dds_input>
 
@@ -227,30 +205,27 @@
                         <!-- We only start reading when the output
                             is ready to write -->
                         <creation_mode>ON_ROUTE_MATCH</creation_mode>
-                        <stream_name>Square</stream_name>
+                        <stream_name>$(SHAPE_TOPIC)</stream_name>
                         <registered_type_name>ShapeType</registered_type_name>
                         <property>
                             <value>
-                                <!-- The output file. We can use (stream_name) to
-                                refer to the stream name that the actual routes
-                                created from this auto route have. We would
-                                get names like MySquare.txt, MyCircle.txt or MyTriangle.txt -->
+                                <!-- The output file.-->
                                 <element>
-                                    <name>FileName</name>
-                                    <value>outSquare.csv</value>
+                                    <name>example.adapter.output_file</name>
+                                    <value>Output_$(SHAPE_TOPIC).csv</value>
                                 </element>
                                 <!-- The write mode can be:
                                 - overwrite (write in the file deleting previous content)
                                 - append (write at then end of the file)
                                 - keep (fail if the file already exists and don't modify it) -->
                                 <element>
-                                    <name>WriteMode</name>
+                                    <name>example.adapter.write_mode</name>
                                     <value>overwrite</value>
                                 </element>
                                 <!-- Whether to flush the file after every sample
 				                is written. -->
                                 <element>
-                                    <name>Flush</name>
+                                    <name>example.adapter.flush</name>
                                     <value>1</value>
                                 </element>
                             </value>

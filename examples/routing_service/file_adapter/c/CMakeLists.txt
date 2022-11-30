@@ -61,4 +61,16 @@ ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME}
     COMMAND ${CMAKE_COMMAND} -E copy
         "${CMAKE_CURRENT_SOURCE_DIR}/file_bridge.xml"
         "${CMAKE_BINARY_DIR}/file_bridge.xml"
+    COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_CURRENT_SOURCE_DIR}/Input_Circle.csv"
+        "${CMAKE_BINARY_DIR}/Input_Circle.csv"
+    COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_CURRENT_SOURCE_DIR}/Input_Triangle.csv"
+        "${CMAKE_BINARY_DIR}/Input_Triangle.csv"
+    COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_CURRENT_SOURCE_DIR}/Input_Square.csv"
+        "${CMAKE_BINARY_DIR}/Input_Square.csv"
+    COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_CURRENT_SOURCE_DIR}/ShapeType.xml"
+        "${CMAKE_BINARY_DIR}/ShapeType.xml"
 )

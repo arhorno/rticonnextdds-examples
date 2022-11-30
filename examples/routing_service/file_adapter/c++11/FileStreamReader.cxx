@@ -26,7 +26,8 @@ using namespace rti::community::examples;
 const std::string FileStreamReader::INPUT_FILE_PROPERTY_NAME =
         "example.adapter.input_file";
 const std::string FileStreamReader::SAMPLE_PERIOD_PROPERTY_NAME =
-        "example.adapter.sample_period_sec";
+        "example.adapter.sample_period_millisec";
+const std::string FileStreamReader::LOOP_PROPERTY_NAME = "example.adapter.loop";
 
 bool FileStreamReader::check_csv_file_line_format(const std::string& line)
 {
@@ -62,6 +63,11 @@ void FileStreamReader::file_reading_thread()
              */
             if (!input_file_stream_.eof()) {
                 reader_listener_->on_data_available(this);
+            } else if (loop) {
+                std::cout << "Reached end of stream for file: "
+                          << input_file_name_
+                          << " restating at the beginning..." << std::endl;
+                input_file_stream_.seekg(std::ios_base::beg);
             } else {
                 stop_thread_ = true;
             }
@@ -71,6 +77,7 @@ void FileStreamReader::file_reading_thread()
     }
     std::cout << "Reached end of stream for file: " << input_file_name_
               << std::endl;
+
     file_connection_->dispose_discovery_stream(stream_info_);
 }
 
@@ -79,7 +86,7 @@ FileStreamReader::FileStreamReader(
         const StreamInfo& info,
         const PropertySet& properties,
         StreamReaderListener *listener)
-        : sampling_period_(1),
+        : sampling_period_(1000),
           stop_thread_(false),
           stream_info_(info.stream_name(), info.type_info().type_name())
 {
@@ -94,7 +101,8 @@ FileStreamReader::FileStreamReader(
             input_file_name_ = property.second;
             input_file_stream_.open(property.second);
         } else if (property.first == SAMPLE_PERIOD_PROPERTY_NAME) {
-            sampling_period_ = std::chrono::seconds(std::stoi(property.second));
+            sampling_period_ =
+                    std::chrono::milliseconds(std::stoi(property.second));
         }
     }
 

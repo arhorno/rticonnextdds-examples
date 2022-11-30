@@ -47,8 +47,13 @@
                                     <value>Input_$(SHAPE_TOPIC).csv</value>
                                 </element>
                                 <element>
-                                    <name>example.adapter.sample_period_sec</name>
-                                    <value>1</value>
+                                    <name>example.adapter.sample_period_millisec</name>
+                                    <value>1000</value>
+                                </element>
+                                <!-- How many samples we will take from the file every ReadPeriod -->
+                                <element>
+                                    <name>example.adapter.samples_per_read</name>
+                                    <value>2</value>
                                 </element>
                             </value>
                         </property>
@@ -64,7 +69,7 @@
     </routing_service>
 
     <!-- Demonstrates a scenario where the FileAdapter writes data to a file read by DDSAdapter
-            from the DDS domain for the Squares published using ShapeType in Shapes Demo -->
+            from the DDS domain for the $SHAPE_TOPIC published using ShapeType in Shapes Demo -->
     <routing_service name="DDSToFileAdapter">
         <domain_route name="FileBridge">
             <connection name="FileConnection" plugin_name="AdapterLib::FileAdapter">
@@ -119,8 +124,13 @@
                                     <value>Input_$(SHAPE_TOPIC).csv</value>
                                 </element>
                                 <element>
-                                    <name>example.adapter.sample_period_sec</name>
-                                    <value>1</value>
+                                    <name>example.adapter.sample_period_millisec</name>
+                                    <value>1000</value>
+                                </element>
+                                <!-- How many samples we will take from the file every ReadPeriod -->
+                                <element>
+                                    <name>example.adapter.samples_per_read</name>
+                                    <value>2</value>
                                 </element>
                             </value>
                         </property>
@@ -134,6 +144,20 @@
                                 <element>
                                     <name>example.adapter.output_file</name>
                                     <value>Output_$(SHAPE_TOPIC).csv</value>
+                                </element>
+                                <!-- The write mode can be:
+                                        - overwrite (write in the file deleting previous content)
+                                        - append (write at then end of the file)
+                                        - keep (fail if the file already exists and don't modify it)
+                                -->
+                                <element>
+                                    <name>example.adapter.write_mode</name>
+                                    <value>overwrite</value>
+                                </element>
+                                <!-- Whether to flush the file after every sample is written. -->
+                                <element>
+                                    <name>example.adapter.flush</name>
+                                    <value>1</value>
                                 </element>
                             </value>
                         </property>
