@@ -16,12 +16,11 @@ using namespace rti::routing;
 using namespace rti::routing::adapter;
 using namespace rti::community::examples;
 
-const std::string FileInputDiscoveryStreamReader::SQUARE_FILE_NAME =
-        "Input_Square.csv";
-const std::string FileInputDiscoveryStreamReader::CIRCLE_FILE_NAME =
-        "Input_Circle.csv";
-const std::string FileInputDiscoveryStreamReader::TRIANGLE_FILE_NAME =
-        "Input_Triangle.csv";
+
+const std::string FileInputDiscoveryStreamReader::INPUT_DIR_PROPERTY_NAME =
+        "example.adapter.folder_path";
+const std::string FileInputDiscoveryStreamReader::INPUT_DIR_PROPERTY_NAME =
+        "example.adapter.discovery_sleep_period";
 
 bool FileInputDiscoveryStreamReader::fexists(const std::string filename)
 {
@@ -31,43 +30,44 @@ bool FileInputDiscoveryStreamReader::fexists(const std::string filename)
 }
 
 FileInputDiscoveryStreamReader::FileInputDiscoveryStreamReader(
-        const PropertySet &,
-        StreamReaderListener *input_stream_discovery_listener)
+        const PropertySet& properties,
+        StreamReaderListener *input_stream_discovery_listener,
+        dds::core::xtypes::DynamicType stream_type)
+        : stream_type(stream_type),
+          is_running_enabled_(true),
+          discovery_sleep_period_(5)
 {
     input_stream_discovery_listener_ = input_stream_discovery_listener;
 
-    /**
-     * In our example, we provide statically the stream information available.
-     * We do not have a mechanism demonstrating how to perform discovery after
-     * startup. However, as an idea you can have a thread monitoring the file
-     * system and updating the list of StreamInfo samples and calling
-     * input_stream_discovery_listener_->on_data_available(this); to notify that
-     * new files have been discovered.
-     */
-    if (fexists(SQUARE_FILE_NAME)) {
-        this->data_samples_.push_back(std::unique_ptr<rti::routing::StreamInfo>(
-                new StreamInfo("Square", "ShapeType")));
-    }
-
-    if (fexists(CIRCLE_FILE_NAME)) {
-        this->data_samples_.push_back(std::unique_ptr<rti::routing::StreamInfo>(
-                new StreamInfo("Circle", "ShapeType")));
-    }
-
-    if (fexists(TRIANGLE_FILE_NAME)) {
-        this->data_samples_.push_back(std::unique_ptr<rti::routing::StreamInfo>(
-                new StreamInfo("Triangle", "ShapeType")));
+    std::string input_dir_name;
+    for (auto& property : properties) {
+        if (property.first == INPUT_DIR_PROPERTY_NAME) {
+            input_dir_name = property.second;
+        } else if (property.first == DISCOVERY_SLEEP_PROPERTY_NAME) {
+            discovery_sleep_period_ =
+                    std::chrono::seconds(stoi(property.second));
+        }
     }
 
     /**
-     * Once the FileInputDiscoveryStreamReader is initialized, we trigger an
-     * event to notify that the streams are ready.
+     * Start the thread that is going to be executing periodic scans on the
+     * directory
      */
-    input_stream_discovery_listener_->on_data_available(this);
+    disc_thread_ = std::thread(
+            &FileInputDiscoveryStreamReader::discovery_thread,
+            this,
+            input_dir_name,
+            input_stream_discovery_listener);
+}
+
+FileInputDiscoveryStreamReader::~FileInputDiscoveryStreamReader()
+{
+    is_running_enabled_ = false;
+    disc_thread_.join();
 }
 
 void FileInputDiscoveryStreamReader::dispose(
-        const rti::routing::StreamInfo &stream_info)
+        const rti::routing::StreamInfo& stream_info)
 {
     /**
      * This guard is essential since the take() and return_loan() operations
@@ -89,7 +89,7 @@ void FileInputDiscoveryStreamReader::dispose(
 }
 
 void FileInputDiscoveryStreamReader::take(
-        std::vector<rti::routing::StreamInfo *> &stream)
+        std::vector<rti::routing::StreamInfo *>& stream)
 {
     /**
      * This guard is essential since the take() and return_loan() operations
@@ -103,13 +103,13 @@ void FileInputDiscoveryStreamReader::take(
             data_samples_.begin(),
             data_samples_.end(),
             std::back_inserter(stream),
-            [](const std::unique_ptr<rti::routing::StreamInfo> &element) {
+            [](const std::unique_ptr<rti::routing::StreamInfo>& element) {
                 return element.get();
             });
 }
 
 void FileInputDiscoveryStreamReader::return_loan(
-        std::vector<rti::routing::StreamInfo *> &stream)
+        std::vector<rti::routing::StreamInfo *>& stream)
 {
     /**
      * This guard is essential since the take() and return_loan() operations
@@ -129,4 +129,51 @@ void FileInputDiscoveryStreamReader::return_loan(
             data_samples_.begin(),
             data_samples_.begin() + stream.size());
     stream.clear();
+}
+
+void FileInputDiscoveryStreamReader::discovery_thread(
+        std::string input_directory,
+        rti::routing::adapter::StreamReaderListener *listener)
+{
+    /* NOTE: In C++17 a std::filesystem library is available */
+
+    /* Open directory */
+    DIR *directory = opendir(input_directory.c_str());
+
+    if (directory == NULL) {
+        std::cerr << "Error opening input directory\n";
+        return;
+    }
+
+    /* We just need the name of the discovered files*/
+    std::set<std::string> discovered_files;
+
+    while (is_running_enabled_) {
+        struct dirent *file;
+        while ((file = readdir(directory)) != NULL) {
+            if (file->d_type == DT_REG && file->d_name[0] != '.'
+                && discovered_files.emplace(std::string(file->d_name)).second) {
+                /*
+                 * New file discovered, we add it to the data_samples_ vector
+                 * and call on_data_available()
+                 */
+
+                rti::routing::StreamInfo *infoSample(
+                        new StreamInfo("TextLineStream", "TextLine"));
+
+                /* If we don't define the type here, we have to define it in
+                 * xml and register it in the <connection tag>*/
+                infoSample->type_info().dynamic_type(&stream_type);
+
+                this->data_samples_.push_back(
+                        std::unique_ptr<rti::routing::StreamInfo>(infoSample));
+
+                listener->on_data_available(this);
+                std::cout << "discovered new file: " << file->d_name
+                          << std::endl;
+            }
+        }
+
+        std::this_thread::sleep_for(discovery_sleep_period_);
+    }
 }

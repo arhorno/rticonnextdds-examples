@@ -31,10 +31,12 @@ bool FileInputDiscoveryStreamReader::fexists(const std::string filename)
 }
 
 FileInputDiscoveryStreamReader::FileInputDiscoveryStreamReader(
-        const PropertySet &,
+        const PropertySet&,
         StreamReaderListener *input_stream_discovery_listener)
 {
     input_stream_discovery_listener_ = input_stream_discovery_listener;
+
+    std::cout << "Created discovery reader" << std::endl;
 
     /**
      * In our example, we provide statically the stream information available.
@@ -43,6 +45,7 @@ FileInputDiscoveryStreamReader::FileInputDiscoveryStreamReader(
      * system and updating the list of StreamInfo samples and calling
      * input_stream_discovery_listener_->on_data_available(this); to notify that
      * new files have been discovered.
+     * TODO: do not hardcode file names!!
      */
     if (fexists(SQUARE_FILE_NAME)) {
         this->data_samples_.push_back(std::unique_ptr<rti::routing::StreamInfo>(
@@ -67,7 +70,7 @@ FileInputDiscoveryStreamReader::FileInputDiscoveryStreamReader(
 }
 
 void FileInputDiscoveryStreamReader::dispose(
-        const rti::routing::StreamInfo &stream_info)
+        const rti::routing::StreamInfo& stream_info)
 {
     /**
      * This guard is essential since the take() and return_loan() operations
@@ -89,7 +92,7 @@ void FileInputDiscoveryStreamReader::dispose(
 }
 
 void FileInputDiscoveryStreamReader::take(
-        std::vector<rti::routing::StreamInfo *> &stream)
+        std::vector<rti::routing::StreamInfo *>& stream)
 {
     /**
      * This guard is essential since the take() and return_loan() operations
@@ -103,13 +106,13 @@ void FileInputDiscoveryStreamReader::take(
             data_samples_.begin(),
             data_samples_.end(),
             std::back_inserter(stream),
-            [](const std::unique_ptr<rti::routing::StreamInfo> &element) {
+            [](const std::unique_ptr<rti::routing::StreamInfo>& element) {
                 return element.get();
             });
 }
 
 void FileInputDiscoveryStreamReader::return_loan(
-        std::vector<rti::routing::StreamInfo *> &stream)
+        std::vector<rti::routing::StreamInfo *>& stream)
 {
     /**
      * This guard is essential since the take() and return_loan() operations

@@ -45,7 +45,7 @@
                                 <!-- The file from which to read -->
                                 <element>
                                     <name>example.adapter.input_file</name>
-                                    <value>Input_$(SHAPE_TOPIC).csv</value>
+                                    <value>input.csv</value>
                                 </element>
                                 <!-- How often we read samples from the file (ms) -->
                                 <element>

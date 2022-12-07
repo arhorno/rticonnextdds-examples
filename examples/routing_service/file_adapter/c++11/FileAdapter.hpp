@@ -15,6 +15,10 @@
 
 #include <dds/core/corefwd.hpp>
 #include <dds/core/macros.hpp>
+#include <dds/core/xtypes/CollectionTypes.hpp>
+#include <dds/core/xtypes/PrimitiveTypes.hpp>
+#include <dds/core/xtypes/StructType.hpp>
+
 #include <rti/routing/PropertySet.hpp>
 #include <rti/routing/RoutingService.hpp>
 #include <rti/routing/adapter/AdapterPlugin.hpp>
@@ -22,16 +26,19 @@
 namespace rti { namespace community { namespace examples {
 class FileAdapter : public rti::routing::adapter::AdapterPlugin {
 public:
-    explicit FileAdapter(rti::routing::PropertySet &);
+    explicit FileAdapter(rti::routing::PropertySet&);
 
     rti::routing::adapter::Connection *create_connection(
             rti::routing::adapter::detail::StreamReaderListener *,
             rti::routing::adapter::detail::StreamReaderListener *,
-            const rti::routing::PropertySet &) final;
+            const rti::routing::PropertySet&) final;
 
     void delete_connection(rti::routing::adapter::Connection *connection) final;
 
     rti::config::LibraryVersion get_version() const;
+
+private:
+    dds::core::xtypes::DynamicType create_dynamic_type();
 };
 
 

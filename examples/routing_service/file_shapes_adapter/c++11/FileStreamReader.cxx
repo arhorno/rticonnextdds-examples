@@ -63,7 +63,7 @@ void FileStreamReader::file_reading_thread()
              */
             if (!input_file_stream_.eof()) {
                 reader_listener_->on_data_available(this);
-            } else if (loop) {
+            } else if (loop_) {
                 std::cout << "Reached end of stream for file: "
                           << input_file_name_
                           << " restating at the beginning..." << std::endl;
@@ -88,8 +88,10 @@ FileStreamReader::FileStreamReader(
         StreamReaderListener *listener)
         : sampling_period_(1000),
           stop_thread_(false),
-          stream_info_(info.stream_name(), info.type_info().type_name())
+          stream_info_(info.stream_name(), info.type_info().type_name()),
+          loop_(false)
 {
+    std::cout << "Created stream reader " << info.stream_name() << std::endl;
     file_connection_ = connection;
     reader_listener_ = listener;
     adapter_type_ =
@@ -103,6 +105,11 @@ FileStreamReader::FileStreamReader(
         } else if (property.first == SAMPLE_PERIOD_PROPERTY_NAME) {
             sampling_period_ =
                     std::chrono::milliseconds(std::stoi(property.second));
+        } else if (property.first == LOOP_PROPERTY_NAME) {
+            if (property.second == "yes" || property.second == "true"
+                || property.second == "1") {
+                loop_ = true;
+            }
         }
     }
 

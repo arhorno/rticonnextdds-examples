@@ -21,18 +21,23 @@ using namespace rti::routing::adapter;
 FileConnection::FileConnection(
         StreamReaderListener *input_stream_discovery_listener,
         StreamReaderListener *output_stream_discovery_listener,
-        const PropertySet &properties)
+        const PropertySet& properties,
+        dds::core::xtypes::DynamicType stream_type)
         : input_discovery_reader_(
                 properties,
-                input_stream_discovery_listener) {};
+                input_stream_discovery_listener,
+                stream_type),
+          data_type_(stream_type) {
+
+          };
 
 StreamReader *FileConnection::create_stream_reader(
         Session *session,
-        const StreamInfo &info,
-        const PropertySet &properties,
+        const StreamInfo& info,
+        const PropertySet& properties,
         StreamReaderListener *listener)
 {
-    return new FileStreamReader(this, info, properties, listener);
+    return new FileStreamReader(this, info, properties, listener, data_type_);
 }
 
 void FileConnection::delete_stream_reader(StreamReader *reader)
@@ -44,8 +49,8 @@ void FileConnection::delete_stream_reader(StreamReader *reader)
 
 StreamWriter *FileConnection::create_stream_writer(
         Session *session,
-        const StreamInfo &info,
-        const PropertySet &properties)
+        const StreamInfo& info,
+        const PropertySet& properties)
 {
     return new FileStreamWriter(properties);
 }
@@ -66,7 +71,7 @@ DiscoveryStreamReader *FileConnection::input_stream_discovery_reader()
 }
 
 void FileConnection::dispose_discovery_stream(
-        const rti::routing::StreamInfo &stream_info)
+        const rti::routing::StreamInfo& stream_info)
 {
     input_discovery_reader_.dispose(stream_info);
 }

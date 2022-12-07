@@ -21,10 +21,10 @@ using namespace rti::community::examples;
 const std::string FileStreamWriter::OUTPUT_FILE_PROPERTY_NAME =
         "example.adapter.output_file";
 
-FileStreamWriter::FileStreamWriter(const PropertySet &properties)
+FileStreamWriter::FileStreamWriter(const PropertySet& properties)
 {
     std::string output_file_name;
-    for (const auto &property : properties) {
+    for (const auto& property : properties) {
         if (property.first == OUTPUT_FILE_PROPERTY_NAME) {
             output_file_name = property.second;
             output_file_.open(output_file_name);
@@ -41,17 +41,19 @@ FileStreamWriter::FileStreamWriter(const PropertySet &properties)
 }
 
 int FileStreamWriter::write(
-        const std::vector<dds::core::xtypes::DynamicData *> &samples,
-        const std::vector<dds::sub::SampleInfo *> &infos)
+        const std::vector<dds::core::xtypes::DynamicData *>& samples,
+        const std::vector<dds::sub::SampleInfo *>& infos)
 {
     for (auto sample : samples) {
-        std::cout << "Received Sample: " << std::endl
-                  << rti::topic::to_string(*sample) << std::endl;
 
-        output_file_ << sample->value<std::string>("color") << ","
-                     << sample->value<int32_t>("x") << ","
-                     << sample->value<int32_t>("y") << ","
-                     << sample->value<int32_t>("shapesize") << std::endl;
+        std::vector<uint8_t> buff =
+                sample->get_values<uint8_t>(std::string("value"));
+
+        for (auto character : buff) {
+            output_file_ << character;
+        }
+        output_file_ << '\n';
+        output_file_.flush();
     }
     return 0;
 }

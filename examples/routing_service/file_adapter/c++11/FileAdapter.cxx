@@ -17,21 +17,21 @@ using namespace rti::community::examples;
 using namespace rti::routing;
 using namespace rti::routing::adapter;
 
-FileAdapter::FileAdapter(PropertySet &properties)
-{
-}
+FileAdapter::FileAdapter(PropertySet& properties)
+{ }
 
 Connection *FileAdapter::create_connection(
         rti::routing::adapter::detail::StreamReaderListener
                 *input_stream_discovery_listener,
         rti::routing::adapter::detail::StreamReaderListener
                 *output_stream_discovery_listener,
-        const PropertySet &properties)
+        const PropertySet& properties)
 {
     FileConnection *fc = new FileConnection(
             input_stream_discovery_listener,
             output_stream_discovery_listener,
-            properties);
+            properties,
+            create_dynamic_type());
     return fc;
 }
 
@@ -41,6 +41,18 @@ void FileAdapter::delete_connection(Connection *connection)
      * Perform cleanup pertaining to the connection object here.
      */
     delete connection;
+}
+
+dds::core::xtypes::DynamicType FileAdapter::create_dynamic_type()
+{
+    using namespace dds::core::xtypes;
+    SequenceType sq(dds::core::xtypes::primitive_type<uint8_t>()); /*Sequence of
+                                                                      octets*/
+
+    StructType text_line_type("TextLine");
+    text_line_type.add_member(Member("value", sq));
+
+    return text_line_type;
 }
 
 rti::config::LibraryVersion FileAdapter::get_version() const

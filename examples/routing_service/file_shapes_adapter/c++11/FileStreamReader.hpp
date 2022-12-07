@@ -70,7 +70,7 @@ private:
     std::thread filereader_thread_;
     bool stop_thread_;
     std::chrono::milliseconds sampling_period_;
-    bool loop;
+    bool loop_;
 
     std::ifstream input_file_stream_;
     std::string input_file_name_;

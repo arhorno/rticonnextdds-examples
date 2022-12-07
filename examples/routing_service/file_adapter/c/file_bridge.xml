@@ -41,19 +41,19 @@
                         <element>
                             <!-- This property it is to indicate whether the
 		                        connection is used as input or output connection -->
-                            <name>Direction</name>
+                            <name>example.adapter.Direction</name>
                             <value>Input</value>
                         </element>
                         <element>
                             <!-- This is the path of the input directory, the directory that will
 		                        be scanned to check for file present to copy to the other side -->
-                            <name>FolderPath</name>
+                            <name>example.adapter.folder_path</name>
                             <value>$(INPUT_DIRECTORY)</value>
                         </element>
                         <!-- This property specifies how often you are going to check
 		                    inside the input folder if there are new files -->
                         <element>
-                            <name>SleepPeriod</name>
+                            <name>example.adapter.discovery_sleep_period</name>
                             <value>5</value>
                         </element>
                     </value>
@@ -63,13 +63,13 @@
                 <property>
                     <value>
                         <element>
-                            <name>Direction</name>
+                            <name>example.adapter.Direction</name>
                             <value>Output</value>
                         </element>
                         <element>
                             <!-- This is the path of the output directory, where the discovered
 		                        files will be copied -->
-                            <name>FolderPath</name>
+                            <name>example.adapter.folder_path</name>
                             <value>$(OUTPUT_DIRECTORY)</value>
                         </element>
                     </value>

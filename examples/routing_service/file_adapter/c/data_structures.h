@@ -19,11 +19,12 @@
 #define MAX_PAYLOAD_SIZE 1024
 
 // Adapter plugin configuration property names
-#define FILE_ADAPTER_CONNECTION_DIRECTION "Direction"
+#define FILE_ADAPTER_CONNECTION_DIRECTION "example.adapter.Direction"
 #define FILE_ADAPTER_CONNECTION_DIRECTION_INPUT "Input"
 #define FILE_ADAPTER_CONNECTION_DIRECTION_OUTPUT "Output"
-#define FILE_ADAPTER_CONNECTION_FOLDER_PATH "FolderPath"
-#define FILE_ADAPTER_CONNECTION_DISCOVERY_THREAD_SLEEP_PERIOD "SleepPeriod"
+#define FILE_ADAPTER_CONNECTION_FOLDER_PATH "example.adapter.folder_path"
+#define FILE_ADAPTER_CONNECTION_DISCOVERY_THREAD_SLEEP_PERIOD \
+  "example.adapter.discovery_sleep_period"
 
 #define FILE_ADAPTER_READ_PERIOD "ReadPeriod"
 #define FILE_ADAPTER_SAMPLES_PER_READ "SamplesPerRead"
@@ -41,6 +42,7 @@
 struct RTI_RoutingServiceFileAdapterPlugin {
     struct RTI_RoutingServiceAdapterPlugin _base;
 };
+
 /*****************************************************************************/
 struct RTI_RoutingServiceFileConnection {
     /* the path of the directory to scan */

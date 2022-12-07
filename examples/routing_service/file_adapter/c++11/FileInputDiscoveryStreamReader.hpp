@@ -14,7 +14,12 @@
 #define FILEDISCOVERYSTREAMREADER_HPP
 
 #include <fstream>
+#include <thread>
 #include <mutex>
+#include <set>
+
+#include <sys/types.h>
+#include <dirent.h>
 
 #include <rti/routing/adapter/AdapterPlugin.hpp>
 #include <rti/routing/adapter/DiscoveryStreamReader.hpp>
@@ -31,13 +36,16 @@ class FileInputDiscoveryStreamReader
         : public rti::routing::adapter::DiscoveryStreamReader {
 public:
     FileInputDiscoveryStreamReader(
-            const rti::routing::PropertySet &,
+            const rti::routing::PropertySet&,
             rti::routing::adapter::StreamReaderListener
-                    *input_stream_discovery_listener);
+                    *input_stream_discovery_listener,
+            dds::core::xtypes::DynamicType stream_type);
 
-    void take(std::vector<rti::routing::StreamInfo *> &) final;
+    ~FileInputDiscoveryStreamReader();
 
-    void return_loan(std::vector<rti::routing::StreamInfo *> &) final;
+    void take(std::vector<rti::routing::StreamInfo *>&) final;
+
+    void return_loan(std::vector<rti::routing::StreamInfo *>&) final;
 
     /**
      * @brief Custom operation defined to indicate disposing off an <input>
@@ -51,19 +59,28 @@ public:
      * @param stream_info \b in. Reference to a StreamInfo object which should
      * be used when creating a new StreamInfo sample with disposed set to true
      */
-    void dispose(const rti::routing::StreamInfo &stream_info);
+    void dispose(const rti::routing::StreamInfo& stream_info);
 
     bool fexists(const std::string filename);
 
 private:
-    static const std::string SQUARE_FILE_NAME;
-    static const std::string CIRCLE_FILE_NAME;
-    static const std::string TRIANGLE_FILE_NAME;
+    void discovery_thread(
+            std::string input_directory,
+            rti::routing::adapter::StreamReaderListener *listener);
+
+
+    static const std::string INPUT_DIR_PROPERTY_NAME;
+    static const std::string DISCOVERY_SLEEP_PROPERTY_NAME;
+
+    dds::core::xtypes::DynamicType stream_type;
 
     std::mutex data_samples_mutex_;
     std::vector<std::unique_ptr<rti::routing::StreamInfo>> data_samples_;
     rti::routing::adapter::StreamReaderListener
             *input_stream_discovery_listener_;
+    bool is_running_enabled_;
+    std::thread disc_thread_;
+    std::chrono::seconds discovery_sleep_period_;
 };
 
 }}}  // namespace rti::community::examples
