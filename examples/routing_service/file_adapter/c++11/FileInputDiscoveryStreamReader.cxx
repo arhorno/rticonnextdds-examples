@@ -16,11 +16,15 @@ using namespace rti::routing;
 using namespace rti::routing::adapter;
 using namespace rti::community::examples;
 
-
-const std::string FileInputDiscoveryStreamReader::INPUT_DIR_PROPERTY_NAME =
+const std::string FileInputDiscoveryStreamReader::FOLDER_PATH_PROPERTY_NAME =
         "example.adapter.folder_path";
-const std::string FileInputDiscoveryStreamReader::INPUT_DIR_PROPERTY_NAME =
-        "example.adapter.discovery_sleep_period";
+const std::string
+        FileInputDiscoveryStreamReader::DISCOVERY_SLEEP_PROPERTY_NAME =
+                "example.adapter.discovery_sleep_period";
+const std::string FileInputDiscoveryStreamReader ::DIRECTION_PROPERTY_NAME =
+        "example.adapter.Direction";
+const std::string FileInputDiscoveryStreamReader::DIRECTION_INPUT = "Input";
+const std::string FileInputDiscoveryStreamReader::DIRECTION_OUTPUT = "Output";
 
 bool FileInputDiscoveryStreamReader::fexists(const std::string filename)
 {
@@ -39,13 +43,25 @@ FileInputDiscoveryStreamReader::FileInputDiscoveryStreamReader(
 {
     input_stream_discovery_listener_ = input_stream_discovery_listener;
 
+    std::cout << "Created discovery" << std::endl;
+
     std::string input_dir_name;
     for (auto& property : properties) {
-        if (property.first == INPUT_DIR_PROPERTY_NAME) {
+        if (property.first == FOLDER_PATH_PROPERTY_NAME) {
             input_dir_name = property.second;
         } else if (property.first == DISCOVERY_SLEEP_PROPERTY_NAME) {
             discovery_sleep_period_ =
                     std::chrono::seconds(stoi(property.second));
+        } else if (property.first == DIRECTION_PROPERTY_NAME) {
+            if (property.second == DIRECTION_INPUT) {
+                input_ = true;
+            } else if (property.second == DIRECTION_OUTPUT) {
+                input_ = false;
+            } else {
+                throw dds::core::IllegalOperationError(
+                        "Direction parameter not valid, must be "
+                        + DIRECTION_INPUT + " or " + DIRECTION_OUTPUT);
+            }
         }
     }
 
@@ -135,6 +151,10 @@ void FileInputDiscoveryStreamReader::discovery_thread(
         std::string input_directory,
         rti::routing::adapter::StreamReaderListener *listener)
 {
+    /* If the connection output, we just end the thread now*/
+    if (!input_) {
+        return;
+    }
     /* NOTE: In C++17 a std::filesystem library is available */
 
     /* Open directory */
@@ -156,10 +176,11 @@ void FileInputDiscoveryStreamReader::discovery_thread(
                 /*
                  * New file discovered, we add it to the data_samples_ vector
                  * and call on_data_available()
+                 * We use the stream name to pass the file name to the reader
                  */
 
                 rti::routing::StreamInfo *infoSample(
-                        new StreamInfo("TextLineStream", "TextLine"));
+                        new StreamInfo(std::string(file->d_name), "TextLine"));
 
                 /* If we don't define the type here, we have to define it in
                  * xml and register it in the <connection tag>*/

@@ -68,9 +68,11 @@ private:
             std::string input_directory,
             rti::routing::adapter::StreamReaderListener *listener);
 
-
-    static const std::string INPUT_DIR_PROPERTY_NAME;
+    static const std::string DIRECTION_PROPERTY_NAME;
+    static const std::string DIRECTION_INPUT;
+    static const std::string DIRECTION_OUTPUT;
     static const std::string DISCOVERY_SLEEP_PROPERTY_NAME;
+    static const std::string FOLDER_PATH_PROPERTY_NAME;
 
     dds::core::xtypes::DynamicType stream_type;
 
@@ -81,6 +83,7 @@ private:
     bool is_running_enabled_;
     std::thread disc_thread_;
     std::chrono::seconds discovery_sleep_period_;
+    bool input_;
 };
 
 }}}  // namespace rti::community::examples

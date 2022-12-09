@@ -18,6 +18,9 @@ using namespace rti::community::examples;
 using namespace rti::routing;
 using namespace rti::routing::adapter;
 
+const std::string FileConnection::FOLDER_PATH_PROPERTY_NAME =
+        "example.adapter.folder_path";
+
 FileConnection::FileConnection(
         StreamReaderListener *input_stream_discovery_listener,
         StreamReaderListener *output_stream_discovery_listener,
@@ -27,9 +30,14 @@ FileConnection::FileConnection(
                 properties,
                 input_stream_discovery_listener,
                 stream_type),
-          data_type_(stream_type) {
-
-          };
+          data_type_(stream_type)
+{
+    for (auto property : properties) {
+        if (property.first == FOLDER_PATH_PROPERTY_NAME) {
+            folder_path_ = property.second;
+        }
+    }
+};
 
 StreamReader *FileConnection::create_stream_reader(
         Session *session,
@@ -37,7 +45,7 @@ StreamReader *FileConnection::create_stream_reader(
         const PropertySet& properties,
         StreamReaderListener *listener)
 {
-    return new FileStreamReader(this, info, properties, listener, data_type_);
+    return new FileStreamReader(this, info, properties, listener, folder_path_);
 }
 
 void FileConnection::delete_stream_reader(StreamReader *reader)
@@ -52,7 +60,7 @@ StreamWriter *FileConnection::create_stream_writer(
         const StreamInfo& info,
         const PropertySet& properties)
 {
-    return new FileStreamWriter(properties);
+    return new FileStreamWriter(properties, info, folder_path_);
 }
 
 void FileConnection::delete_stream_writer(StreamWriter *writer)

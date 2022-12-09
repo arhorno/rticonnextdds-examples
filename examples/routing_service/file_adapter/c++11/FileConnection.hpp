@@ -65,9 +65,14 @@ public:
      */
     void dispose_discovery_stream(const rti::routing::StreamInfo& stream_info);
 
+
 private:
+
+    static const std::string FOLDER_PATH_PROPERTY_NAME;
+
     FileInputDiscoveryStreamReader input_discovery_reader_;
     dds::core::xtypes::DynamicType data_type_;
+    std::string folder_path_;
 };
 
 }}}  // namespace rti::community::examples

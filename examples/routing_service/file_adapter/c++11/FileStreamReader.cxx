@@ -24,13 +24,10 @@ using namespace rti::routing;
 using namespace rti::routing::adapter;
 using namespace rti::community::examples;
 
-const std::string FileStreamReader::INPUT_FILE_PROPERTY_NAME =
-        "example.adapter.input_file";
-const std::string FileStreamReader::SAMPLE_PERIOD_PROPERTY_NAME =
-        "example.adapter.sample_period_sec";
-const std::string FileStreamReader::LOOP_PROPERTY_NAME = "example.adapter.loop";
-const std::string FileStreamReader::BUFFER_SIZE_PROPERTY_NAME =
-        "example.adapter.buffer_size";
+const std::string FileStreamReader::READ_PERIOD_PROPERTY_NAME =
+        "example.adapter.read_period";
+const std::string FileStreamReader::SAMPLES_PER_READ_PROPERTY_NAME =
+        "example.adapter.samples_per_read";
 
 bool FileStreamReader::is_digit(const std::string& value)
 {
@@ -51,11 +48,6 @@ void FileStreamReader::file_reading_thread()
              */
             if (!input_file_stream_.eof()) {
                 reader_listener_->on_data_available(this);
-            } else if (loop_) {
-                std::cout << "Reached end of stream for file: "
-                          << input_file_name_
-                          << " restating at the beginning..." << std::endl;
-                input_file_stream_.seekg(std::ios_base::beg);
             } else {
                 stop_thread_ = true;
             }
@@ -73,13 +65,11 @@ FileStreamReader::FileStreamReader(
         const StreamInfo& info,
         const PropertySet& properties,
         StreamReaderListener *listener,
-        dds::core::xtypes::DynamicType& data_type)
+        std::string folder_path)
         : sampling_period_(1),
           stop_thread_(false),
-          stream_info_(info.stream_name(), info.type_info().type_name()),
-          loop_(false),
-          buffer_size_(1024),
-          adapter_type_(data_type)
+          stream_info_(info),
+          buffer_size_(1024)
 {
     std::cout << "FileStreamReader created" << std::endl;
     file_connection_ = connection;
@@ -88,26 +78,17 @@ FileStreamReader::FileStreamReader(
 
     // Parse the properties provided in the xml configuration file
     for (const auto& property : properties) {
-        if (property.first == INPUT_FILE_PROPERTY_NAME) {
-            /*TODO: concatenate with directory name*/
-            input_file_name_ = property.second;
-            input_file_stream_.open(property.second);
-        } else if (property.first == SAMPLE_PERIOD_PROPERTY_NAME) {
+        if (property.first == READ_PERIOD_PROPERTY_NAME) {
             sampling_period_ = std::chrono::seconds(std::stoi(property.second));
-        } else if (property.first == LOOP_PROPERTY_NAME) {
-            if (property.second == "yes" || property.second == "true"
-                || property.second == "1") {
-                loop_ = true;
-            }
-        } else if (property.first == BUFFER_SIZE_PROPERTY_NAME) {
-            buffer_size_ = stoi(property.second);
+        } else if (property.first == SAMPLES_PER_READ_PROPERTY_NAME) {
+            samples_per_read_ = std::stoi(property.second);
         }
     }
 
-    if (input_file_name_.empty()) {
-        throw dds::core::IllegalOperationError(
-                "Error property not found: " + INPUT_FILE_PROPERTY_NAME);
-    } else if (!input_file_stream_.is_open()) {
+    input_file_name_ = folder_path + '/' + info.stream_name();
+    input_file_stream_.open(input_file_name_);
+
+    if (!input_file_stream_.is_open()) {
         throw dds::core::IllegalOperationError(
                 "Error opening input file: " + input_file_name_);
     } else {
@@ -130,7 +111,8 @@ void FileStreamReader::take(
     samples.resize(1);
     infos.resize(1);
 
-    std::unique_ptr<DynamicData> sample(new DynamicData(adapter_type_));
+    std::unique_ptr<DynamicData> sample(
+            new DynamicData(stream_info_.type_info().dynamic_type()));
 
     if (!input_file_stream_.eof()) {
         std::string read_str;

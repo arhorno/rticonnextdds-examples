@@ -22,40 +22,65 @@
     <!-- Demonstrates a scenario where the FileAdapter reads from a file and writes
             back the same data to a new file -->
     <routing_service name="FileAdapterToFileAdapter">
+        <administration>
+            <domain_id>128</domain_id>
+        </administration>
         <domain_route name="FileBridge">
-            <connection name="FileConnection" plugin_name="AdapterLib::FileAdapter">
+
+            <connection name="FileConnectionInput" plugin_name="AdapterLib::FileAdapter">
                 <property>
                     <value>
                         <element>
                             <name>example.adapter.folder_path</name>
-                            <value>input</value>
+                            <value>$(INPUT_DIRECTORY)</value>
                         </element>
                         <element>
                             <name>example.adapter.discovery_sleep_period</name>
                             <value>5</value>
                         </element>
+                        <element>
+                            <name>example.adapter.Direction</name>
+                            <value>Input</value>
+                        </element>
                     </value>
                 </property>
-
             </connection>
+                <connection name="FileConnectionOutput" plugin_name="AdapterLib::FileAdapter">
+                    <property>
+                        <value>
+                            <element>
+                                <name>example.adapter.folder_path</name>
+                                <value>$(OUTPUT_DIRECTORY)</value>
+                            </element>
+                            <element>
+                                <name>example.adapter.Direction</name>
+                                <value>Output</value>
+                            </element>
+                        </value>
+                    </property>
+            </connection>
+
+
             <session name="session">
                 <auto_route>
-                    <input connection="FileConnection">
+                    <input connection="FileConnectionInput">
                         <creation_mode>ON_DOMAIN_MATCH</creation_mode>
                         <property>
                             <value>
-                                <element>
-                                    <name>example.adapter.input_file</name>
-                                    <value>input/Input_Square.csv</value>
-                                </element>
+                                <!-- If we dont provide an input file, by default it
+                                    will open every file in the discovery directory-->
                                 <element>
                                     <name>example.adapter.sample_period_sec</name>
                                     <value>1</value>
                                 </element>
+                                <element>
+                                    <name>example.adapter.samples_per_read</name>
+                                    <value>2</value>
+                                </element>
                             </value>
                         </property>
                     </input>
-                    <output connection="FileConnection">
+                    <output connection="FileConnectionOutput">
                         <creation_mode>ON_ROUTE_MATCH</creation_mode>
                         <property>
                             <value>

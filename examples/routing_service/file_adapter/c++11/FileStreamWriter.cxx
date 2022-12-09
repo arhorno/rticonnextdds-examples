@@ -18,25 +18,23 @@ using namespace rti::routing;
 using namespace rti::routing::adapter;
 using namespace rti::community::examples;
 
-const std::string FileStreamWriter::OUTPUT_FILE_PROPERTY_NAME =
-        "example.adapter.output_file";
+const std::string FileStreamWriter::WRITE_MODE_PROPERTY_NAME =
+        "example.adapter.write_mode";
+const std::string FileStreamWriter::FLUSH_PROPERTY_NAME =
+        "example.adapter.flush";
 
-FileStreamWriter::FileStreamWriter(const PropertySet& properties)
+FileStreamWriter::FileStreamWriter(
+        const PropertySet& properties,
+        const StreamInfo& info,
+        std::string folder_path)
 {
-    std::string output_file_name;
-    for (const auto& property : properties) {
-        if (property.first == OUTPUT_FILE_PROPERTY_NAME) {
-            output_file_name = property.second;
-            output_file_.open(output_file_name);
-            break;
-        }
-    }
-
+    std::string file_path = folder_path + '/' + info.stream_name();
+    output_file_.open(file_path);
     if (!output_file_.is_open()) {
         throw dds::core::IllegalOperationError(
-                "Error opening output file: " + output_file_name);
+                "Error opening output file: " + file_path);
     } else {
-        std::cout << "Output file name: " << output_file_name << std::endl;
+        std::cout << "Output file name: " << file_path << std::endl;
     }
 }
 
@@ -45,7 +43,6 @@ int FileStreamWriter::write(
         const std::vector<dds::sub::SampleInfo *>& infos)
 {
     for (auto sample : samples) {
-
         std::vector<uint8_t> buff =
                 sample->get_values<uint8_t>(std::string("value"));
 

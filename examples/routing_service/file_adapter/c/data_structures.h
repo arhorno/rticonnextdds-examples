@@ -26,10 +26,10 @@
 #define FILE_ADAPTER_CONNECTION_DISCOVERY_THREAD_SLEEP_PERIOD \
   "example.adapter.discovery_sleep_period"
 
-#define FILE_ADAPTER_READ_PERIOD "ReadPeriod"
-#define FILE_ADAPTER_SAMPLES_PER_READ "SamplesPerRead"
-#define FILE_ADAPTER_WRITE_MODE "WriteMode"
-#define FILE_ADAPTER_FLUSH "Flush"
+#define FILE_ADAPTER_READ_PERIOD "example.adapter.read_period"
+#define FILE_ADAPTER_SAMPLES_PER_READ "example.adapter.samples_per_read"
+#define FILE_ADAPTER_WRITE_MODE "example.adapter.write_mode"
+#define FILE_ADAPTER_FLUSH "example.adapter.flush"
 
 /* ========================================================================= */
 /*                                                                           */

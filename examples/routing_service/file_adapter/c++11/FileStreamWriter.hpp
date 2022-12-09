@@ -23,16 +23,21 @@ namespace rti { namespace community { namespace examples {
 
 class FileStreamWriter : public rti::routing::adapter::DynamicDataStreamWriter {
 public:
-    explicit FileStreamWriter(const rti::routing::PropertySet &);
+    explicit FileStreamWriter(
+            const rti::routing::PropertySet&,
+            const rti::routing::StreamInfo& info,
+            std::string folder_path);
 
-    int
-            write(const std::vector<dds::core::xtypes::DynamicData *> &samples,
-                  const std::vector<dds::sub::SampleInfo *> &infos) final;
+    int write(
+            const std::vector<dds::core::xtypes::DynamicData *>& samples,
+            const std::vector<dds::sub::SampleInfo *>& infos) final;
 
     ~FileStreamWriter();
 
 private:
-    static const std::string OUTPUT_FILE_PROPERTY_NAME;
+    static const std::string WRITE_MODE_PROPERTY_NAME;
+    static const std::string FLUSH_PROPERTY_NAME;
+
     std::ofstream output_file_;
 };
 

@@ -31,7 +31,7 @@ public:
             const rti::routing::StreamInfo& info,
             const rti::routing::PropertySet&,
             rti::routing::adapter::StreamReaderListener *listener,
-            dds::core::xtypes::DynamicType& data_type);
+            std::string folder_path);
 
     void take(
             std::vector<dds::core::xtypes::DynamicData *>&,
@@ -53,10 +53,8 @@ public:
     ~FileStreamReader();
 
 private:
-    static const std::string INPUT_FILE_PROPERTY_NAME;
-    static const std::string SAMPLE_PERIOD_PROPERTY_NAME;
-    static const std::string LOOP_PROPERTY_NAME;
-    static const std::string BUFFER_SIZE_PROPERTY_NAME;
+    static const std::string READ_PERIOD_PROPERTY_NAME;
+    static const std::string SAMPLES_PER_READ_PROPERTY_NAME;
 
     /**
      * @brief Function used by filereader_thread_ to read samples from the
@@ -70,7 +68,6 @@ private:
     std::thread filereader_thread_;
     bool stop_thread_;
     std::chrono::seconds sampling_period_;
-    bool loop_;
     size_t buffer_size_;
 
     std::ifstream input_file_stream_;
@@ -79,7 +76,7 @@ private:
     std::mutex buffer_mutex_;
 
     rti::routing::StreamInfo stream_info_;
-    dds::core::xtypes::DynamicType adapter_type_;
+    int samples_per_read_;
 };
 
 }}}  // namespace rti::community::examples
