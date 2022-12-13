@@ -11,6 +11,7 @@
  */
 
 #include "FileStreamWriter.hpp"
+#include "Properties.hpp"
 #include <rti/core/Exception.hpp>
 #include <rti/topic/to_string.hpp>
 
@@ -18,18 +19,45 @@ using namespace rti::routing;
 using namespace rti::routing::adapter;
 using namespace rti::community::examples;
 
-const std::string FileStreamWriter::WRITE_MODE_PROPERTY_NAME =
-        "example.adapter.write_mode";
-const std::string FileStreamWriter::FLUSH_PROPERTY_NAME =
-        "example.adapter.flush";
-
 FileStreamWriter::FileStreamWriter(
         const PropertySet& properties,
         const StreamInfo& info,
         std::string folder_path)
 {
+    char write_mode = 'o';
+    flush_ = true;
+    for (const auto& Property : properties) {
+        if (Property.first == WRITE_MODE_PROPERTY_NAME) {
+            if (Property.second == WRITE_MODE_APPEND) {
+                write_mode = 'a';
+            } else if (Property.second == WRITE_MODE_KEEP) {
+                write_mode = 'k';
+            }
+        } else if (Property.first == FLUSH_PROPERTY_NAME) {
+            flush_ = Property.second == "true" || Property.second == "1";
+        }
+    }
+
     std::string file_path = folder_path + '/' + info.stream_name();
-    output_file_.open(file_path);
+
+
+    if (write_mode == 'o') {
+        output_file_.open(file_path, std::ofstream::trunc);
+    } else if (write_mode == 'a') {
+        output_file_.open(file_path, std::ofstream::app);
+    } else {
+        /* If keep, we need to open in read mode, if opened, the file exist*/
+        std::ifstream in_stream;
+        in_stream.open(file_path);
+        if (in_stream.is_open()) {
+            in_stream.close();
+            throw dds::core::IllegalOperationError(
+                    "Error opening output file: " + file_path
+                    + ": The file exist and write mode is \"keep\"");
+        }
+    }
+
+
     if (!output_file_.is_open()) {
         throw dds::core::IllegalOperationError(
                 "Error opening output file: " + file_path);
@@ -50,7 +78,9 @@ int FileStreamWriter::write(
             output_file_ << character;
         }
         output_file_ << '\n';
-        output_file_.flush();
+        if (flush_) {
+            output_file_.flush();
+        }
     }
     return 0;
 }

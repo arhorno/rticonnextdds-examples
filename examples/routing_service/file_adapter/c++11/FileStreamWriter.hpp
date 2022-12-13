@@ -35,10 +35,8 @@ public:
     ~FileStreamWriter();
 
 private:
-    static const std::string WRITE_MODE_PROPERTY_NAME;
-    static const std::string FLUSH_PROPERTY_NAME;
-
     std::ofstream output_file_;
+    bool flush_;
 };
 
 }}}  // namespace rti::community::examples

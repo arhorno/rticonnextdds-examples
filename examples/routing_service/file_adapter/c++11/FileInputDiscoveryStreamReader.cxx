@@ -11,20 +11,11 @@
  */
 
 #include "FileInputDiscoveryStreamReader.hpp"
+#include "Properties.hpp"
 
 using namespace rti::routing;
 using namespace rti::routing::adapter;
 using namespace rti::community::examples;
-
-const std::string FileInputDiscoveryStreamReader::FOLDER_PATH_PROPERTY_NAME =
-        "example.adapter.folder_path";
-const std::string
-        FileInputDiscoveryStreamReader::DISCOVERY_SLEEP_PROPERTY_NAME =
-                "example.adapter.discovery_sleep_period";
-const std::string FileInputDiscoveryStreamReader ::DIRECTION_PROPERTY_NAME =
-        "example.adapter.Direction";
-const std::string FileInputDiscoveryStreamReader::DIRECTION_INPUT = "Input";
-const std::string FileInputDiscoveryStreamReader::DIRECTION_OUTPUT = "Output";
 
 bool FileInputDiscoveryStreamReader::fexists(const std::string filename)
 {

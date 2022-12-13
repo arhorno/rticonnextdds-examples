@@ -18,7 +18,7 @@
 
 #define MAX_PAYLOAD_SIZE 1024
 
-// Adapter plugin configuration property names
+/* Adapter plugin configuration property names */
 #define FILE_ADAPTER_CONNECTION_DIRECTION "example.adapter.Direction"
 #define FILE_ADAPTER_CONNECTION_DIRECTION_INPUT "Input"
 #define FILE_ADAPTER_CONNECTION_DIRECTION_OUTPUT "Output"

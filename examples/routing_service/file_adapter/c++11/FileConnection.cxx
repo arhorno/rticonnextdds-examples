@@ -13,13 +13,11 @@
 #include "FileConnection.hpp"
 #include "FileStreamReader.hpp"
 #include "FileStreamWriter.hpp"
+#include "Properties.hpp"
 
 using namespace rti::community::examples;
 using namespace rti::routing;
 using namespace rti::routing::adapter;
-
-const std::string FileConnection::FOLDER_PATH_PROPERTY_NAME =
-        "example.adapter.folder_path";
 
 FileConnection::FileConnection(
         StreamReaderListener *input_stream_discovery_listener,

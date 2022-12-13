@@ -60,6 +60,9 @@ set_target_properties(${PROJECT_NAME}
 ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_CURRENT_SOURCE_DIR}/example_file.xml"
+        "${CMAKE_BINARY_DIR}/example_file.xml"
+    COMMAND ${CMAKE_COMMAND} -E copy
         "${CMAKE_CURRENT_SOURCE_DIR}/file_bridge.xml"
         "${CMAKE_BINARY_DIR}/file_bridge.xml"
 )

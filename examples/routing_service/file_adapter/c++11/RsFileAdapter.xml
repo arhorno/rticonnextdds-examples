@@ -22,22 +22,27 @@
     <!-- Demonstrates a scenario where the FileAdapter reads from a file and writes
             back the same data to a new file -->
     <routing_service name="FileAdapterToFileAdapter">
-        <administration>
-            <domain_id>128</domain_id>
-        </administration>
         <domain_route name="FileBridge">
 
             <connection name="FileConnectionInput" plugin_name="AdapterLib::FileAdapter">
                 <property>
                     <value>
+                        <!-- Path to the directory where the files to read/write are-->
                         <element>
                             <name>example.adapter.folder_path</name>
                             <value>$(INPUT_DIRECTORY)</value>
                         </element>
+
+                        <!-- Number of seconds to sleep between scans in the input folder.-->
                         <element>
                             <name>example.adapter.discovery_sleep_period</name>
                             <value>5</value>
                         </element>
+
+                        <!-- Whether if the connection is going to be used as "Input" or "Output".
+                                Usually, the same connection can be used to read and write from/to
+                                a data domain. In this case, we have a dedicated connection for each
+                                since we specify one directory for input and another for output-->
                         <element>
                             <name>example.adapter.Direction</name>
                             <value>Input</value>
@@ -67,12 +72,13 @@
                         <creation_mode>ON_DOMAIN_MATCH</creation_mode>
                         <property>
                             <value>
-                                <!-- If we dont provide an input file, by default it
-                                    will open every file in the discovery directory-->
+                                <!-- How many seconds to wait between readind the next batch of samples (lines)-->
                                 <element>
-                                    <name>example.adapter.sample_period_sec</name>
+                                    <name>example.adapter.read_period</name>
                                     <value>1</value>
                                 </element>
+
+                                <!-- How much samples to read in each batch-->
                                 <element>
                                     <name>example.adapter.samples_per_read</name>
                                     <value>2</value>
@@ -84,12 +90,18 @@
                         <creation_mode>ON_ROUTE_MATCH</creation_mode>
                         <property>
                             <value>
+                                <!-- The write mode can be:
+                                        - overwrite (write in the file deleting previous content)
+                                        - append (write at then end of the file)
+                                        - keep (fail if the file already exists and don't modify it)
+                                -->
                                 <element>
-                                    <name>example.adapter.output_file</name>
-                                    <value>output.csv</value>
+                                    <name>example.adapter.write_mode</name>
+                                    <value>overwrite</value>
                                 </element>
+                                <!-- Whether to flush the file after every sample is written. -->
                                 <element>
-                                    <name>example.adapter.sample_period_sec</name>
+                                    <name>example.adapter.flush</name>
                                     <value>1</value>
                                 </element>
                             </value>

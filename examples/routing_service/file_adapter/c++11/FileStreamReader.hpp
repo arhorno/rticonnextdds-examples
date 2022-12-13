@@ -53,8 +53,7 @@ public:
     ~FileStreamReader();
 
 private:
-    static const std::string READ_PERIOD_PROPERTY_NAME;
-    static const std::string SAMPLES_PER_READ_PROPERTY_NAME;
+
 
     /**
      * @brief Function used by filereader_thread_ to read samples from the

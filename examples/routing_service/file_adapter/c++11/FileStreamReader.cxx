@@ -16,6 +16,7 @@
 #include <thread>
 
 #include "FileStreamReader.hpp"
+#include "Properties.hpp"
 #include <rti/core/Exception.hpp>
 #include <rti/topic/to_string.hpp>
 
@@ -23,11 +24,6 @@ using namespace dds::core::xtypes;
 using namespace rti::routing;
 using namespace rti::routing::adapter;
 using namespace rti::community::examples;
-
-const std::string FileStreamReader::READ_PERIOD_PROPERTY_NAME =
-        "example.adapter.read_period";
-const std::string FileStreamReader::SAMPLES_PER_READ_PROPERTY_NAME =
-        "example.adapter.samples_per_read";
 
 bool FileStreamReader::is_digit(const std::string& value)
 {
@@ -104,24 +100,26 @@ void FileStreamReader::take(
         std::vector<dds::sub::SampleInfo *>& infos)
 {
     /**
-     * TODO:
-     * Note that we read one line at a time from the CSV file in the
+     * Note that we read samples_per_read_ lines at a time
+     * from the CSV file in the
      * function file_reading_thread()
      */
-    samples.resize(1);
-    infos.resize(1);
+    samples.resize(samples_per_read_);
+    infos.resize(samples_per_read_);
 
-    std::unique_ptr<DynamicData> sample(
-            new DynamicData(stream_info_.type_info().dynamic_type()));
+    for (size_t i = 0; i < samples_per_read_; i++) {
+        std::unique_ptr<DynamicData> sample(
+                new DynamicData(stream_info_.type_info().dynamic_type()));
 
-    if (!input_file_stream_.eof()) {
-        std::string read_str;
-        std::getline(input_file_stream_, read_str);
-        dds::core::ByteSeq buff(read_str.begin(), read_str.end());
-        sample->set_values("value", buff);
+        if (!input_file_stream_.eof()) {
+            std::string read_str;
+            std::getline(input_file_stream_, read_str);
+            dds::core::ByteSeq buff(read_str.begin(), read_str.end());
+            sample->set_values("value", buff);
+        }
+        samples[i] = sample.release();
     }
 
-    samples[0] = sample.release();
 
     return;
 }
@@ -138,7 +136,7 @@ void FileStreamReader::return_loan(
         std::vector<dds::core::xtypes::DynamicData *>& samples,
         std::vector<dds::sub::SampleInfo *>& infos)
 {
-    for (int i = 0; i < samples.size(); ++i) {
+    for (size_t i = 0; i < samples.size(); ++i) {
         delete samples[i];
         delete infos[i];
     }

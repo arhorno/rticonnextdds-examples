@@ -86,3 +86,17 @@ Now we can run the RTI Routing Service to copy over the files from
 # From within the /build folder
 $<NDDSHOME>/bin/rtiroutingservice -cfgFile file_bridge.xml -cfgName file_to_file
 ```
+
+The general behavior of this example, can be controlled using properties and the
+```INPUT_DIRECTORY``` and ```OUTPUT_DIRECTORY``` environment variable. You can modify properties in the Routing
+Service configuration file. This is the list of available properties:
+
+| Property                                | Tag           | Description                                                                                   |
+| --------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------|
+| `example.adapter.direction`             | `<connection>`| Wether to use the adapter to read from or write to a directory. Valid options are "```Input```" and "```Output```" |
+| `example.adapter.folder_path`           | `<connection>`| Path to the input or output directory|
+| `example.adapter.discovery_sleep_period`| `<connection>`| Number of seconds to sleep between scans in the input folder.
+|`example.adapter.read_period`            | `<input>`     | Periodic rate of reading samples from the file
+| `example.adapter.samples_per_read`      | `<input>`     | How many samples read in each iteration.
+| `example.adapter.write_mode`            | `<output>`    | The write mode can be:<ul><li>```overwrite``` (write in the file deleting previous content)</li><li>```append``` (write at then end of the file)</li><li>```keep``` (fail if the file already exists and don't modify it)</li></ul>|
+| `example.adapter.flush`       | `<output>` | Wether to flush the stream every time the adapter writes a sample.|

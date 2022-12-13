@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.11)
 project(FileAdapterC++11)
 
 if(NOT DEFINED CONNEXTDDS_DIR)
-    set(msg 
+    set(msg
         "Please set the CMake variable CONNEXTDDS_DIR "
         "to point to your installation of RTI Connext DDS")
     message(FATAL_ERROR ${msg})
@@ -60,17 +60,8 @@ set_target_properties(${PROJECT_NAME}
 ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_CURRENT_SOURCE_DIR}/Input_Circle.csv"
-        "${CMAKE_BINARY_DIR}/Input_Circle.csv"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_CURRENT_SOURCE_DIR}/Input_Triangle.csv"
-        "${CMAKE_BINARY_DIR}/Input_Triangle.csv"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_CURRENT_SOURCE_DIR}/Input_Square.csv"
-        "${CMAKE_BINARY_DIR}/Input_Square.csv"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_CURRENT_SOURCE_DIR}/ShapeType.xml"
-        "${CMAKE_BINARY_DIR}/ShapeType.xml"
+        "${CMAKE_CURRENT_SOURCE_DIR}/example_file.csv"
+        "${CMAKE_BINARY_DIR}/example_file.csv"
     COMMAND ${CMAKE_COMMAND} -E copy
         "${CMAKE_CURRENT_SOURCE_DIR}/RsFileAdapter.xml"
         "${CMAKE_BINARY_DIR}/RsFileAdapter.xml"
