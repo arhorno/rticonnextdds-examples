@@ -56,13 +56,3 @@ set_target_properties(${PROJECT_NAME}
         DEBUG_POSTFIX "d"
 )
 
-# Copy the sample data files into the binary directory
-ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_CURRENT_SOURCE_DIR}/example_file.csv"
-        "${CMAKE_BINARY_DIR}/example_file.csv"
-    COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_CURRENT_SOURCE_DIR}/RsFileAdapter.xml"
-        "${CMAKE_BINARY_DIR}/RsFileAdapter.xml"
-)
