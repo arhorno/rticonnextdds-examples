@@ -59,7 +59,7 @@ public:
      * @param stream_info \b in. Reference to a StreamInfo object which should
      * be used when creating a new StreamInfo sample with disposed set to true
      */
-    void dispose(const rti::routing::StreamInfo& stream_info);
+    void dispose(const rti::routing::StreamInfo &stream_info);
 
     bool fexists(const std::string filename);
 

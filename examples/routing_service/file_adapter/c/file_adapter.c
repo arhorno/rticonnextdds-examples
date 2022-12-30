@@ -203,7 +203,7 @@ void RTI_RoutingServiceFileStreamReader_read(
      * if the function read it is called because we have discovery data,
      * the pointer or the stream reader that calls the
      */
-    if ((self->connection->input_discovery_reader == self)) {
+    if (self->connection->input_discovery_reader == self) {
         int new_discovered_samples = 0;
 
         fprintf(stdout,
@@ -725,7 +725,7 @@ RTI_RoutingServiceFileConnection_create_stream_writer(
         if (file != NULL) {
             RTI_RoutingServiceEnvironment_set_error(
                     env,
-                    "File exists and WriteMode is keep");
+                    "File exists and write_mode is keep");
             fclose(file);
             free(filename);
             return NULL;

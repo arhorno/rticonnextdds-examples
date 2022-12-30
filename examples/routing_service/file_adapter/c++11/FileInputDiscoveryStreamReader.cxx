@@ -16,41 +16,35 @@
 using namespace rti::routing;
 using namespace rti::routing::adapter;
 using namespace rti::community::examples;
-
-bool FileInputDiscoveryStreamReader::fexists(const std::string filename)
-{
-    std::ifstream input_file;
-    input_file.open(filename);
-    return input_file.is_open();
-}
+using namespace dds::core::xtypes;
 
 FileInputDiscoveryStreamReader::FileInputDiscoveryStreamReader(
-        const PropertySet& properties,
+        const PropertySet &properties,
         StreamReaderListener *input_stream_discovery_listener,
-        dds::core::xtypes::DynamicType stream_type)
+        DynamicType stream_type)
         : stream_type(stream_type),
           is_running_enabled_(true),
           discovery_sleep_period_(5)
 {
-    input_stream_discovery_listener_ = input_stream_discovery_listener;
+    input_stream_discovery_listener_ = input_stream_discovery_listener; // This should rather go to initializer list 
 
     std::cout << "Created discovery" << std::endl;
 
     std::string input_dir_name;
-    for (auto& property : properties) {
+    for (auto &property : properties) {
         if (property.first == FOLDER_PATH_PROPERTY_NAME) {
             input_dir_name = property.second;
         } else if (property.first == DISCOVERY_SLEEP_PROPERTY_NAME) {
             discovery_sleep_period_ =
                     std::chrono::seconds(stoi(property.second));
         } else if (property.first == DIRECTION_PROPERTY_NAME) {
-            if (property.second == DIRECTION_INPUT) {
+            if (property.second == DIRECTION_INPUT) { // input_ should be initialized (not guaranteed we enter here)
                 input_ = true;
             } else if (property.second == DIRECTION_OUTPUT) {
                 input_ = false;
             } else {
                 throw dds::core::IllegalOperationError(
-                        "Direction parameter not valid, must be "
+                        "direction parameter not valid, must be "
                         + DIRECTION_INPUT + " or " + DIRECTION_OUTPUT);
             }
         }
@@ -63,8 +57,8 @@ FileInputDiscoveryStreamReader::FileInputDiscoveryStreamReader(
     disc_thread_ = std::thread(
             &FileInputDiscoveryStreamReader::discovery_thread,
             this,
-            input_dir_name,
-            input_stream_discovery_listener);
+            input_dir_name, // better create member input_dir_name_
+            input_stream_discovery_listener); // since we have input_stream_discovery_listener_ this is redundant
 }
 
 FileInputDiscoveryStreamReader::~FileInputDiscoveryStreamReader()
@@ -74,7 +68,7 @@ FileInputDiscoveryStreamReader::~FileInputDiscoveryStreamReader()
 }
 
 void FileInputDiscoveryStreamReader::dispose(
-        const rti::routing::StreamInfo& stream_info)
+        const rti::routing::StreamInfo &stream_info)
 {
     /**
      * This guard is essential since the take() and return_loan() operations
@@ -96,7 +90,7 @@ void FileInputDiscoveryStreamReader::dispose(
 }
 
 void FileInputDiscoveryStreamReader::take(
-        std::vector<rti::routing::StreamInfo *>& stream)
+        std::vector<rti::routing::StreamInfo *> &stream)
 {
     /**
      * This guard is essential since the take() and return_loan() operations
@@ -110,13 +104,13 @@ void FileInputDiscoveryStreamReader::take(
             data_samples_.begin(),
             data_samples_.end(),
             std::back_inserter(stream),
-            [](const std::unique_ptr<rti::routing::StreamInfo>& element) {
+            [](const std::unique_ptr<rti::routing::StreamInfo> &element) {
                 return element.get();
             });
 }
 
 void FileInputDiscoveryStreamReader::return_loan(
-        std::vector<rti::routing::StreamInfo *>& stream)
+        std::vector<rti::routing::StreamInfo *> &stream)
 {
     /**
      * This guard is essential since the take() and return_loan() operations

@@ -15,9 +15,9 @@
        wouldn't affect the execution, but autocompletion wouldn't work -->
 
     <!-- Adapter entry points are defined here -->
-    <adapter_library name="adapters">
-        <adapter_plugin name="file">
-            <dll>FileAdapterCd</dll>
+    <adapter_library name="AdapterLib">
+        <adapter_plugin name="FileAdapter">
+            <dll>FileAdapterC</dll>
             <create_function>RTI_RoutingServiceFileAdapterPlugin_create</create_function>
         </adapter_plugin>
     </adapter_library>
@@ -25,7 +25,7 @@
     <!-- ****************************************************************** -->
     <!-- ****************************************************************** -->
 
-    <routing_service name="file_to_file">
+    <routing_service name="FileAdapterToFileAdapter">
         <annotation>
             <documentation>
                 This application scans one folder in the file system,
@@ -34,69 +34,76 @@
             </documentation>
         </annotation>
 
-        <domain_route>
-            <connection name="1" plugin_name="adapters::file">
+        <domain_route name="FileBridge">
+
+            <connection name="FileConnectionInput" plugin_name="AdapterLib::FileAdapter">
                 <property>
                     <value>
-                        <element>
-                            <!-- This property it is to indicate whether the
-		                        connection is used as input or output connection -->
-                            <name>example.adapter.Direction</name>
-                            <value>Input</value>
-                        </element>
+                        <!-- Path to the directory where the files to read/write are-->
                         <element>
                             <!-- This is the path of the input directory, the directory that will
-		                        be scanned to check for file present to copy to the other side -->
+                                        be scanned to check for file present to copy to the other side -->
                             <name>example.adapter.folder_path</name>
                             <value>$(INPUT_DIRECTORY)</value>
                         </element>
                         <!-- This property specifies how often you are going to check
-		                    inside the input folder if there are new files -->
+                                    inside the input folder if there are new files -->
                         <element>
                             <name>example.adapter.discovery_sleep_period</name>
                             <value>5</value>
                         </element>
+
+                        <!-- Whether the connection is going to be used as "Input" or "Output".
+                                Usually, the same connection can be used to read and write from/to
+                                a data domain. In this case, we have a dedicated connection for each
+                                since we specify one directory for input and another for output-->
+                        <element>
+                            <!-- This property it is to indicate whether the
+                                        connection is used as input or output connection -->
+                            <name>example.adapter.direction</name>
+                            <value>Input</value>
+                        </element>
                     </value>
                 </property>
             </connection>
-            <connection name="2" plugin_name="adapters::file">
+            <connection name="FileConnectionOutput" plugin_name="AdapterLib::FileAdapter">
                 <property>
                     <value>
                         <element>
-                            <name>example.adapter.Direction</name>
-                            <value>Output</value>
-                        </element>
-                        <element>
                             <!-- This is the path of the output directory, where the discovered
-		                        files will be copied -->
+                                        files will be copied -->
                             <name>example.adapter.folder_path</name>
                             <value>$(OUTPUT_DIRECTORY)</value>
+                        </element>
+                        <element>
+                            <name>example.adapter.direction</name>
+                            <value>Output</value>
                         </element>
                     </value>
                 </property>
             </connection>
 
-            <session name="ff">
-                <auto_route name="ddsdds">
-                    <input connection="1">
+            <session name="FileToFileSession">
+                <auto_route name="AllInputToOutput">
+                    <input connection="FileConnectionInput">
                         <creation_mode>ON_DOMAIN_MATCH</creation_mode>
                         <property>
                             <value>
                                 <!-- How often we read samples from the file (ms) -->
                                 <element>
-                                    <name>ReadPeriod</name>
+                                    <name>example.adapter.read_period</name>
                                     <value>1000</value>
                                 </element>
-                                <!-- How many samples we will take from the file every ReadPeriod -->
+                                <!-- How many samples we will take from the file every read_period -->
                                 <element>
-                                    <name>SamplesPerRead</name>
+                                    <name>example.adapter.samples_per_read</name>
                                     <value>1</value>
                                 </element>
                             </value>
                         </property>
                     </input>
 
-                    <output connection="2">
+                    <output connection="FileConnectionOutput">
                         <creation_mode>ON_ROUTE_MATCH</creation_mode>
                         <property>
                             <value>
@@ -106,12 +113,12 @@
                                         - keep (fail if the file already exists and don't modify it)
                                 -->
                                 <element>
-                                    <name>WriteMode</name>
+                                    <name>example.adapter.write_mode</name>
                                     <value>overwrite</value>
                                 </element>
                                 <!-- Whether to flush the file after every sample is written. -->
                                 <element>
-                                    <name>Flush</name>
+                                    <name>example.adapter.flush</name>
                                     <value>1</value>
                                 </element>
                             </value>

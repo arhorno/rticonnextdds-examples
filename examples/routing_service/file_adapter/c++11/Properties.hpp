@@ -16,7 +16,7 @@
 const std::string FOLDER_PATH_PROPERTY_NAME = "example.adapter.folder_path";
 const std::string DISCOVERY_SLEEP_PROPERTY_NAME =
         "example.adapter.discovery_sleep_period";
-const std::string DIRECTION_PROPERTY_NAME = "example.adapter.Direction";
+const std::string DIRECTION_PROPERTY_NAME = "example.adapter.direction";
 const std::string DIRECTION_INPUT = "Input";
 const std::string DIRECTION_OUTPUT = "Output";
 

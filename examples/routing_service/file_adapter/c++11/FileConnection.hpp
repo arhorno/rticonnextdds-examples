@@ -27,13 +27,13 @@ public:
                     *input_stream_discovery_listener,
             rti::routing::adapter::StreamReaderListener
                     *output_stream_discovery_listener,
-            const rti::routing::PropertySet& properties,
+            const rti::routing::PropertySet &properties,
             dds::core::xtypes::DynamicType stream_type);
 
     rti::routing::adapter::StreamReader *create_stream_reader(
             rti::routing::adapter::Session *session,
-            const rti::routing::StreamInfo& info,
-            const rti::routing::PropertySet& properties,
+            const rti::routing::StreamInfo &info,
+            const rti::routing::PropertySet &properties,
             rti::routing::adapter::StreamReaderListener *listener) final;
 
     void delete_stream_reader(
@@ -41,8 +41,8 @@ public:
 
     rti::routing::adapter::StreamWriter *create_stream_writer(
             rti::routing::adapter::Session *session,
-            const rti::routing::StreamInfo& info,
-            const rti::routing::PropertySet& properties) final;
+            const rti::routing::StreamInfo &info,
+            const rti::routing::PropertySet &properties) final;
 
     void delete_stream_writer(
             rti::routing::adapter::StreamWriter *writer) final;
@@ -63,7 +63,7 @@ public:
      * @param stream_info \b in. Reference to a StreamInfo object which should
      * be used when creating a new StreamInfo sample with disposed set to true
      */
-    void dispose_discovery_stream(const rti::routing::StreamInfo& stream_info);
+    void dispose_discovery_stream(const rti::routing::StreamInfo &stream_info);
 
 
 private:

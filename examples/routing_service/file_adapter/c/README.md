@@ -21,6 +21,7 @@ In order to build this example, you need to provide the following variables to
 - `CONNEXTDDS_DIR`
 - `CONNEXTDDS_ARCH` (needed only if you have multiple architectures installed)
 
+<!-- Here cd build is missing -->
 ```bash
 $mkdir build
 $cmake -DCONNEXTDDS_DIR=<Connext DDS Directory>

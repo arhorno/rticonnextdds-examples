@@ -25,12 +25,12 @@ class FileStreamWriter : public rti::routing::adapter::DynamicDataStreamWriter {
 public:
     explicit FileStreamWriter(
             const rti::routing::PropertySet&,
-            const rti::routing::StreamInfo& info,
+            const rti::routing::StreamInfo &info,
             std::string folder_path);
 
     int write(
-            const std::vector<dds::core::xtypes::DynamicData *>& samples,
-            const std::vector<dds::sub::SampleInfo *>& infos) final;
+            const std::vector<dds::core::xtypes::DynamicData *> &samples,
+            const std::vector<dds::sub::SampleInfo *> &infos) final;
 
     ~FileStreamWriter();
 

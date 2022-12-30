@@ -25,7 +25,7 @@ using namespace rti::routing;
 using namespace rti::routing::adapter;
 using namespace rti::community::examples;
 
-bool FileStreamReader::is_digit(const std::string& value)
+bool FileStreamReader::is_digit(const std::string &value)
 {
     return std::find_if(
                    value.begin(),
@@ -38,6 +38,9 @@ void FileStreamReader::file_reading_thread()
 {
     while (!stop_thread_) {
         if (input_file_stream_.is_open()) {
+
+            // Mutex??
+
             /**
              * Here we notify Routing Service, that there is data available
              * on the StreamReader, triggering a call to take().
@@ -58,8 +61,8 @@ void FileStreamReader::file_reading_thread()
 
 FileStreamReader::FileStreamReader(
         FileConnection *connection,
-        const StreamInfo& info,
-        const PropertySet& properties,
+        const StreamInfo &info,
+        const PropertySet &properties,
         StreamReaderListener *listener,
         std::string folder_path)
         : sampling_period_(1),
@@ -73,9 +76,9 @@ FileStreamReader::FileStreamReader(
 
 
     // Parse the properties provided in the xml configuration file
-    for (const auto& property : properties) {
+    for (const auto &property : properties) {
         if (property.first == READ_PERIOD_PROPERTY_NAME) {
-            sampling_period_ = std::chrono::seconds(std::stoi(property.second));
+            sampling_period_ = std::chrono::milliseconds(std::stoi(property.second));
         } else if (property.first == SAMPLES_PER_READ_PROPERTY_NAME) {
             samples_per_read_ = std::stoi(property.second);
         }
@@ -96,14 +99,17 @@ FileStreamReader::FileStreamReader(
 }
 
 void FileStreamReader::take(
-        std::vector<dds::core::xtypes::DynamicData *>& samples,
-        std::vector<dds::sub::SampleInfo *>& infos)
+        std::vector<dds::core::xtypes::DynamicData *> &samples,
+        std::vector<dds::sub::SampleInfo *> &infos)
 {
     /**
      * Note that we read samples_per_read_ lines at a time
      * from the CSV file in the
      * function file_reading_thread()
      */
+
+    // Mutex??
+
     samples.resize(samples_per_read_);
     infos.resize(samples_per_read_);
 
@@ -125,16 +131,16 @@ void FileStreamReader::take(
 }
 
 void FileStreamReader::take(
-        std::vector<dds::core::xtypes::DynamicData *>& samples,
-        std::vector<dds::sub::SampleInfo *>& infos,
-        const SelectorState& selector_state)
+        std::vector<dds::core::xtypes::DynamicData *> &samples,
+        std::vector<dds::sub::SampleInfo *> &infos,
+        const SelectorState &selector_state)
 {
     take(samples, infos);
 }
 
 void FileStreamReader::return_loan(
-        std::vector<dds::core::xtypes::DynamicData *>& samples,
-        std::vector<dds::sub::SampleInfo *>& infos)
+        std::vector<dds::core::xtypes::DynamicData *> &samples,
+        std::vector<dds::sub::SampleInfo *> &infos)
 {
     for (size_t i = 0; i < samples.size(); ++i) {
         delete samples[i];

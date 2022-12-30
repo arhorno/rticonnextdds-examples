@@ -20,13 +20,13 @@ using namespace rti::routing::adapter;
 using namespace rti::community::examples;
 
 FileStreamWriter::FileStreamWriter(
-        const PropertySet& properties,
-        const StreamInfo& info,
+        const PropertySet &properties,
+        const StreamInfo &info,
         std::string folder_path)
 {
     char write_mode = 'o';
     flush_ = true;
-    for (const auto& Property : properties) {
+    for (const auto &Property : properties) {
         if (Property.first == WRITE_MODE_PROPERTY_NAME) {
             if (Property.second == WRITE_MODE_APPEND) {
                 write_mode = 'a';
@@ -67,8 +67,8 @@ FileStreamWriter::FileStreamWriter(
 }
 
 int FileStreamWriter::write(
-        const std::vector<dds::core::xtypes::DynamicData *>& samples,
-        const std::vector<dds::sub::SampleInfo *>& infos)
+        const std::vector<dds::core::xtypes::DynamicData *> &samples,
+        const std::vector<dds::sub::SampleInfo *> &infos)
 {
     for (auto sample : samples) {
         std::vector<uint8_t> buff =
