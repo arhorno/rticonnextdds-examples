@@ -46,7 +46,8 @@ FileStreamWriter::FileStreamWriter(
     } else if (write_mode == 'a') {
         output_file_.open(file_path, std::ofstream::app);
     } else {
-        /* If keep, we need to open in read mode, if opened, the file exist*/
+        /* If the open mode is keep, we need to open in read mode, if opened,
+         * the file exist*/
         std::ifstream in_stream;
         in_stream.open(file_path);
         if (in_stream.is_open()) {

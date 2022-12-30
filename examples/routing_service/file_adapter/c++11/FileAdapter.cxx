@@ -43,6 +43,7 @@ void FileAdapter::delete_connection(Connection *connection)
     delete connection;
 }
 
+/* Returns the type to be used by the plugin*/
 dds::core::xtypes::DynamicType FileAdapter::create_dynamic_type()
 {
     using namespace dds::core::xtypes;

@@ -12,12 +12,11 @@ In order to build this example, you need to provide the following variables to
 - `CONNEXTDDS_ARCH` (needed only if you have multiple architectures installed)
 
 ```bash
-mkdir build
-cmake -DCONNEXTDDS_DIR=<Connext DDS Directory>
-    -DCONNEXTDDS_ARCH=<Connext DDS Architecture>
-    -DBUILD_SHARED_LIBS=ON|OFF
-    -DCMAKE_BUILD_TYPE=Debug|Release ..
-cmake --build .
+cmake -DCONNEXTDDS_DIR=<Connext DDS Directory> \
+    -DCONNEXTDDS_ARCH=<Connext DDS Architecture> \
+    -DBUILD_SHARED_LIBS=ON|OFF \
+    -DCMAKE_BUILD_TYPE=Debug|Release .
+cmake --build build
 ```
 
 **Note:** Since this example uses the `pthread` library, it only works on

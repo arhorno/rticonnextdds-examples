@@ -31,12 +31,12 @@ In order to build this example, you need to provide the following variables to
 - `CONNEXTDDS_ARCH`
 
 ```bash
-$mkdir build
-$cmake -DCONNEXTDDS_DIR=<Connext DDS Directory>
-    -DCONNEXTDDS_ARCH=<Connext DDS Architecture>
-    -DBUILD_SHARED_LIBS=ON|OFF
-    -DCMAKE_BUILD_TYPE=Debug|Release ..
-cmake --build .
+$ cmake -B build \
+    -DCONNEXTDDS_DIR=<Connext DDS Directory> \
+    -DCONNEXTDDS_ARCH=<Connext DDS Architecture> \
+    -DBUILD_SHARED_LIBS=ON|OFF \
+    -DCMAKE_BUILD_TYPE=Debug|Release .
+$ cmake --build build
 ```
 
 **Note**: Since we use POSIX functions for scanning. this example does not work on windows.
@@ -45,7 +45,7 @@ cmake --build .
 Solutions, you can specify the configuration mode to build as follows:
 
 ```bash
-cmake --build . --config Release|Debug
+cmake --build build --config Release|Debug
 ```
 
 Here is more information about generating

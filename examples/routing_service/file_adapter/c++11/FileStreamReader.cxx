@@ -105,6 +105,10 @@ void FileStreamReader::take(
      * function file_reading_thread()
      */
     samples.resize(samples_per_read_);
+
+    /* We do not use sample info.
+     * TODO: docs say you have to leave this vector
+     * untouched if not using sampleInfo*/
     infos.resize(samples_per_read_);
 
     for (size_t i = 0; i < samples_per_read_; i++) {
