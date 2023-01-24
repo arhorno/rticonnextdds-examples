@@ -45,7 +45,7 @@ $ cmake --build build
 Solutions, you can specify the configuration mode to build as follows:
 
 ```bash
-cmake --build build --config Release|Debug
+$ cmake --build build --config Release|Debug
 ```
 
 Here is more information about generating

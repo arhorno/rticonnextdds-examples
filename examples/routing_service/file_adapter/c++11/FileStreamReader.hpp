@@ -1,5 +1,5 @@
 /*
- * (c) 2019 Copyright, Real-Time Innovations, Inc.  All rights reserved.
+ * (c)  2023 Copyright, Real-Time Innovations, Inc.  All rights reserved.
  *
  * RTI grants Licensee a license to use, modify, compile, and create derivative
  * works of the Software.  Licensee has the right to distribute object form
@@ -28,7 +28,7 @@ class FileStreamReader : public rti::routing::adapter::DynamicDataStreamReader {
 public:
     FileStreamReader(
             FileConnection *connection,
-            const rti::routing::StreamInfo& info,
+            const rti::routing::StreamInfo &info,
             const rti::routing::PropertySet&,
             rti::routing::adapter::StreamReaderListener *listener,
             std::string folder_path);
@@ -40,7 +40,7 @@ public:
     void take(
             std::vector<dds::core::xtypes::DynamicData *>&,
             std::vector<dds::sub::SampleInfo *>&,
-            const rti::routing::adapter::SelectorState& selector_state) final;
+            const rti::routing::adapter::SelectorState &selector_state) final;
 
     void return_loan(
             std::vector<dds::core::xtypes::DynamicData *>&,
@@ -48,7 +48,7 @@ public:
 
     void shutdown_file_reader_thread();
 
-    bool is_digit(const std::string& value);
+    bool is_digit(const std::string &value);
 
     ~FileStreamReader();
 
@@ -66,7 +66,7 @@ private:
     rti::routing::adapter::StreamReaderListener *reader_listener_;
     std::thread filereader_thread_;
     bool stop_thread_;
-    std::chrono::seconds sampling_period_;
+    std::chrono::milliseconds sampling_period_;
     size_t buffer_size_;
 
     std::ifstream input_file_stream_;
@@ -76,6 +76,7 @@ private:
 
     rti::routing::StreamInfo stream_info_;
     int samples_per_read_;
+    std::mutex file_stream_mtx_;
 };
 
 }}}  // namespace rti::community::examples

@@ -1,5 +1,5 @@
 /*
- * (c) 2019 Copyright, Real-Time Innovations, Inc.  All rights reserved.
+ * (c)  2023 Copyright, Real-Time Innovations, Inc.  All rights reserved.
  *
  * RTI grants Licensee a license to use, modify, compile, and create derivative
  * works of the Software.  Licensee has the right to distribute object form
@@ -25,12 +25,12 @@ class FileStreamWriter : public rti::routing::adapter::DynamicDataStreamWriter {
 public:
     explicit FileStreamWriter(
             const rti::routing::PropertySet&,
-            const rti::routing::StreamInfo& info,
+            const rti::routing::StreamInfo &info,
             std::string folder_path);
 
     int write(
-            const std::vector<dds::core::xtypes::DynamicData *>& samples,
-            const std::vector<dds::sub::SampleInfo *>& infos) final;
+            const std::vector<dds::core::xtypes::DynamicData *> &samples,
+            const std::vector<dds::sub::SampleInfo *> &infos) final;
 
     ~FileStreamWriter();
 

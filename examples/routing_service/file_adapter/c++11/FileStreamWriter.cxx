@@ -1,5 +1,5 @@
 /*
- * (c) 2019 Copyright, Real-Time Innovations, Inc.  All rights reserved.
+ * (c)  2023 Copyright, Real-Time Innovations, Inc.  All rights reserved.
  *
  * RTI grants Licensee a license to use, modify, compile, and create derivative
  * works of the Software.  Licensee has the right to distribute object form
@@ -20,13 +20,13 @@ using namespace rti::routing::adapter;
 using namespace rti::community::examples;
 
 FileStreamWriter::FileStreamWriter(
-        const PropertySet& properties,
-        const StreamInfo& info,
+        const PropertySet &properties,
+        const StreamInfo &info,
         std::string folder_path)
 {
     char write_mode = 'o';
     flush_ = true;
-    for (const auto& Property : properties) {
+    for (const auto &Property : properties) {
         if (Property.first == WRITE_MODE_PROPERTY_NAME) {
             if (Property.second == WRITE_MODE_APPEND) {
                 write_mode = 'a';
@@ -46,8 +46,7 @@ FileStreamWriter::FileStreamWriter(
     } else if (write_mode == 'a') {
         output_file_.open(file_path, std::ofstream::app);
     } else {
-        /* If the open mode is keep, we need to open in read mode, if opened,
-         * the file exist*/
+        /* If keep, we need to open in read mode, if opened, the file exist*/
         std::ifstream in_stream;
         in_stream.open(file_path);
         if (in_stream.is_open()) {
@@ -68,8 +67,8 @@ FileStreamWriter::FileStreamWriter(
 }
 
 int FileStreamWriter::write(
-        const std::vector<dds::core::xtypes::DynamicData *>& samples,
-        const std::vector<dds::sub::SampleInfo *>& infos)
+        const std::vector<dds::core::xtypes::DynamicData *> &samples,
+        const std::vector<dds::sub::SampleInfo *> &infos)
 {
     for (auto sample : samples) {
         std::vector<uint8_t> buff =

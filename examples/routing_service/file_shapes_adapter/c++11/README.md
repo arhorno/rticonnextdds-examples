@@ -35,12 +35,12 @@ In order to build this example, you need to provide the following variables to
 - `CONNEXTDDS_ARCH`
 
 ```bash
-cmake -B build\
+$ cmake -B build\
    -DCONNEXTDDS_DIR=<Connext DDS Directory> \
    -DCONNEXTDDS_ARCH=<Connext DDS Architecture> \
    -DBUILD_SHARED_LIBS=ON|OFF \
    -DCMAKE_BUILD_TYPE=Debug|Release .
-cmake --build .build
+$ cmake --build .build
 ```
 
 **Note**: when compiling on a Windows 64-bit machine you will need to add the
@@ -50,7 +50,7 @@ cmake --build .build
 Solutions, you can specify the configuration mode to build as follows:
 
 ```bash
-cmake --build . --config Release|Debug
+$ cmake --build . --config Release|Debug
 ```
 
 Here is more information about generating

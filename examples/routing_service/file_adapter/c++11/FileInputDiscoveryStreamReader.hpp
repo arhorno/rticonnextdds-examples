@@ -1,5 +1,5 @@
 /*
- * (c) 2019 Copyright, Real-Time Innovations, Inc.  All rights reserved.
+ * (c)  2023 Copyright, Real-Time Innovations, Inc.  All rights reserved.
  *
  * RTI grants Licensee a license to use, modify, compile, and create derivative
  * works of the Software.  Licensee has the right to distribute object form
@@ -59,14 +59,12 @@ public:
      * @param stream_info \b in. Reference to a StreamInfo object which should
      * be used when creating a new StreamInfo sample with disposed set to true
      */
-    void dispose(const rti::routing::StreamInfo& stream_info);
+    void dispose(const rti::routing::StreamInfo &stream_info);
 
     bool fexists(const std::string filename);
 
 private:
-    void discovery_thread(
-            std::string input_directory,
-            rti::routing::adapter::StreamReaderListener *listener);
+    void discovery_thread();
 
 
 
@@ -80,6 +78,7 @@ private:
     std::thread disc_thread_;
     std::chrono::seconds discovery_sleep_period_;
     bool input_;
+    std::string input_directory_;
 };
 
 }}}  // namespace rti::community::examples

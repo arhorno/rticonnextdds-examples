@@ -1,5 +1,5 @@
 #
-# (c) 2019 Copyright, Real-Time Innovations, Inc.  All rights reserved.
+# (c)  2023 Copyright, Real-Time Innovations, Inc.  All rights reserved.
 #
 #  RTI grants Licensee a license to use, modify, compile, and create derivative
 #  works of the Software.  Licensee has the right to distribute object form
@@ -56,3 +56,10 @@ set_target_properties(${PROJECT_NAME}
         DEBUG_POSTFIX "d"
 )
 
+# Copy the config file into the binary directory
+ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_CURRENT_SOURCE_DIR}/RsFileAdapter.xml"
+        "${CMAKE_BINARY_DIR}/RsFileAdapter.xml"
+)

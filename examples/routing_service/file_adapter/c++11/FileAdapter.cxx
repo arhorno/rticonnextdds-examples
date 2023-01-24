@@ -1,5 +1,5 @@
 /*
- * (c) 2019 Copyright, Real-Time Innovations, Inc.  All rights reserved.
+ * (c)  2023 Copyright, Real-Time Innovations, Inc.  All rights reserved.
  *
  * RTI grants Licensee a license to use, modify, compile, and create derivative
  * works of the Software.  Licensee has the right to distribute object form
@@ -17,7 +17,7 @@ using namespace rti::community::examples;
 using namespace rti::routing;
 using namespace rti::routing::adapter;
 
-FileAdapter::FileAdapter(PropertySet& properties)
+FileAdapter::FileAdapter(PropertySet &properties)
 { }
 
 Connection *FileAdapter::create_connection(
@@ -25,7 +25,7 @@ Connection *FileAdapter::create_connection(
                 *input_stream_discovery_listener,
         rti::routing::adapter::detail::StreamReaderListener
                 *output_stream_discovery_listener,
-        const PropertySet& properties)
+        const PropertySet &properties)
 {
     FileConnection *fc = new FileConnection(
             input_stream_discovery_listener,
