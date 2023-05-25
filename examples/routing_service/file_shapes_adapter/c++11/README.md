@@ -86,11 +86,11 @@ set SHAPE_TOPIC=Triangle
 You have 3 different configurations (cfgName) to choose from:
 
 -   **FileAdapterToDDS** - This reads data from a file using the FileAdapter and
-outputs it to DDS. You can visualize the ouptut by subscribing to the chosen
+outputs it to DDS. You can visualize the output by subscribing to the chosen
 ```SHAPE_TOPIC``` in Shapes Demo.
 -   **DDSToFileAdapter** - This writes data to a file using the FileAdapter by
 reading the input from DDS. You can publish data in Shapes Demo for a shape and
-set that value to ```SHAPE_TOPIC``` before starting Routing Service.
+set ```SHAPE_TOPIC``` to match the shape you are publishing before starting Routing Service.
 -   **FileAdapterToFileAdapter** - This reads data from a file and writes data to
 another file both using the FileAdapter plug-in. As before you should set the
 appropriate value of ```SHAPE_TOPIC``` before starting Routing Service.
@@ -174,7 +174,7 @@ Service configuration file. This is the list of available properties:
 | ---------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------|
 | `example.adapter.input_file`             | `<input>`  | Path to a CSV file that contains the sample data. File must exist and contain valid CSV data. |
 | `example.adapter.sample_period_millisec` | `<input>`  | Periodic rate of reading samples from the file                                                |
-| `example.adapter.sample_period_loop`     | `<input>`  | Whether to restart reading at the beginning of the file when it reach the                     |
+| `example.adapter.sample_period_loop`     | `<input>`  | Whether to restart reading at the beginning of the file when it reach the end                 |
 | `example.adapter.output_file`            | `<output>` | Path to the file where to store the received samples                                          |
 | `example.adapter.write_mode`             | `<output>` | The write mode can be:<ul><li>overwrite (write in the file deleting previous content)</li><li>append (write at then end of the file)</li><li>keep (fail if the file already exists and don't modify it)</li></ul>|
 | `example.adapter.flush`                  | `<output>` | Whether to flush the file after every sample is written.                                      |

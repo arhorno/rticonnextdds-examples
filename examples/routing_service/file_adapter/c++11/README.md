@@ -64,6 +64,7 @@ Before running the example, take a look at file_bridge.xml. It defines the diffe
 
 - INPUT_DIRECTORY
 - OUTPUT_DIRECTORY
+
 They indicate the path to the input directory that will be scanned to check for files, as well as the path to the output directory where all the discovered files will be copied over, respectively.
 
 Note: The following instructions assume you are using bash shell on a UNIX-like system. For other shells like tcsh adapting shouldn't be very difficult.
