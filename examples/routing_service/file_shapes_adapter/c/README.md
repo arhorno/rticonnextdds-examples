@@ -1,7 +1,7 @@
 # Example Code: Routing Service File Adapter
 
 ## Example Description
-This example shows how to create a simple adapter for the ShapeType using the RTI Routing Service Adapter SDK in C. The adapter creates a stream reader/writer to use it as an input/output for routing service. The file to read/write and other options can be configured as properties in the xml configuration file.
+This example shows how to create a simple adapter for the ShapeType using the RTI Routing Service Adapter SDK in C. The adapter creates a stream reader/writer to use it as an input/output for Routing Service. The file to read/write and other options can be configured as properties in the xml configuration file.
 The format used to read or write in files is CSV, where each line contains the fields of a single sample.
 ## Building C example
 
@@ -18,7 +18,7 @@ $ cmake -DCONNEXTDDS_DIR=<Connext DDS Directory> \
     -DCMAKE_BUILD_TYPE=Debug|Release .
 $ cmake --build ./build
 ```
-
+TODO: TBD
 **Note:** Since this example uses the `pthread` library, it only works on
 UNIX-like systems. It has been successfully tested on Ubuntu and macOS.
 
@@ -54,15 +54,16 @@ Possible values for ```SHAPE_TOPIC``` are:
 
 You have 3 different configurations (cfgName) to choose from:
 
--   **file_to_file** - This reads data from a file and writes data to
-another file both using the FileAdapter plug-in. As before you should set the
-appropriate value of ```SHAPE_TOPIC``` before starting Routing Service.
--   **file_to_dds** - This reads data from a file using the FileAdapter and
+
+-   **FileAdapterToDDS** - This reads data from a file using the FileAdapter and
 outputs it to DDS. You can visualize the ouptut by subscribing to the chosen
 ```SHAPE_TOPIC``` in Shapes Demo.
--   **dds_to_file** - This writes data to a file using the FileAdapter by
+-   **DDSToFileAdapter** - This writes data to a file using the FileAdapter by
 reading the input from DDS. You can publish data in Shapes Demo for a shape and
-set that value to ```SHAPE_TOPIC``` before starting Routing Service.
+set ```SHAPE_TOPIC``` to match the shape you are publishing before starting Routing Service.
+-   **FileAdapterToFileAdapter** - This reads data from a file and writes data to
+another file both using the FileAdapter plug-in. As before you should set the
+appropriate value of ```SHAPE_TOPIC``` before starting Routing Service.
 
 To run Routing Service, you will need first to set up your environment as follows.
 
@@ -87,7 +88,7 @@ Service configuration file. This is the list of available properties:
 | ---------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------|
 | `example.adapter.input_file`             | `<input>`  | Path to a CSV file that contains the sample data. File must exist and contain valid CSV data. |
 | `example.adapter.sample_period_millisec` | `<input>`  | Periodic rate of reading samples from the file                                                |
-| `example.adapter.sample_period_loop`     | `<input>`  | Whether to restart reading at the beginning of the file when it reach the                     |
+| `example.adapter.loop`                   | `<input>`  | Whether to restart reading at the beginning of the file when it reach the                     |
 | `example.adapter.output_file`            | `<output>` | Path to the file where to store the received samples                                          |
 | `example.adapter.write_mode`             | `<output>` | The write mode can be:<ul><li>overwrite (write in the file deleting previous content)</li><li>append (write at then end of the file)</li><li>keep (fail if the file already exists and don't modify it)</li></ul>|
 | `example.adapter.flush`                  | `<output>` | Whether to flush the file after every sample is written.                                      |

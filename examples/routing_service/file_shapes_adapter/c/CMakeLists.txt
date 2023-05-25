@@ -59,8 +59,8 @@ set_target_properties(${PROJECT_NAME}
 ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-        "${CMAKE_CURRENT_SOURCE_DIR}/file_bridge.xml"
-        "${CMAKE_BINARY_DIR}/file_bridge.xml"
+        "${CMAKE_CURRENT_SOURCE_DIR}/RsFileAdapter.xml"
+        "${CMAKE_BINARY_DIR}/RsFileAdapter.xml"
     COMMAND ${CMAKE_COMMAND} -E copy
         "${CMAKE_CURRENT_SOURCE_DIR}/Input_Circle.csv"
         "${CMAKE_BINARY_DIR}/Input_Circle.csv"

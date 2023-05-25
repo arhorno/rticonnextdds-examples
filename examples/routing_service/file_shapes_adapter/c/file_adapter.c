@@ -116,8 +116,6 @@ void *RTI_RoutingServiceFileStreamReader_run(void *threadParam)
      * This thread will notify of data availability in the file
      */
 
-    printf("StreamReader_run called\n");
-
     while (self->_run) {
         NDDS_Utility_sleep(&self->readPeriod);
 
@@ -165,7 +163,6 @@ void RTI_RoutingServiceFileStreamReader_read(
     struct RTI_RoutingServiceFileStreamReader *self =
             (struct RTI_RoutingServiceFileStreamReader *) stream_reader;
 
-    printf("StreamReader_read called\n");
 
     /*
      * Assign the memory for the array we are going to produce
@@ -286,7 +283,6 @@ void RTI_RoutingServiceFileStreamReader_update(
      * Get the configuration properties in <route>/<input>/<property>
      */
 
-    printf("StreamReader_update called\n");
 
     loopProp = RTI_RoutingServiceProperties_lookup_property(
             properties,
@@ -339,7 +335,6 @@ int RTI_RoutingServiceFileStreamWriter_write(
     struct DDS_DynamicData *sample = NULL;
     int i;
 
-    printf("StreamWriter_write called\n");
 
     for (i = 0; i < count; i++) {
         sample = (struct DDS_DynamicData *) sample_list[i];
@@ -370,7 +365,6 @@ RTI_RoutingServiceSession RTI_RoutingServiceFileConnection_create_session(
         const struct RTI_RoutingServiceProperties *properties,
         RTI_RoutingServiceEnvironment *env)
 {
-    printf("FileConnection_create_session called\n");
     /* We don't need sessions in this example,
      * we can just return the connection
      * or we could not have implemented this function
@@ -428,7 +422,6 @@ RTI_RoutingServiceFileConnection_create_stream_reader(
     pthread_attr_t threadAttr;
 #endif
 
-    printf("create_stream_reader called\n");
 
     /*
      * Get the configuration properties in <route>/<input>/<property>
@@ -600,8 +593,6 @@ RTI_RoutingServiceFileConnection_create_stream_writer(
     char *pos;
     int error = 0;
 
-    printf("create_stream_writer called\n");
-
 
     modeProp = RTI_RoutingServiceProperties_lookup_property(
             properties,
@@ -757,7 +748,6 @@ RTI_RoutingServiceFileAdapterPlugin_create_connection(
 {
     struct RTI_RoutingServiceFileConnection *connection;
 
-    printf("create_connection called\n");
 
     connection = calloc(1, sizeof(struct RTI_RoutingServiceFileConnection));
 

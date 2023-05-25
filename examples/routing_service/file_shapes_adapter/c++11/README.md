@@ -97,6 +97,7 @@ appropriate value of ```SHAPE_TOPIC``` before starting Routing Service.
 
 To run Routing Service, you will need first to set up your environment as follows.
 
+TODO: maybe is necessary to add more env variables
 Before running the RTI Routing Service, you need to specify where the
 `fileadapter` library is located as shown below:
 

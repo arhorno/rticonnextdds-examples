@@ -30,73 +30,7 @@
 
     <!-- ****************************************************************** -->
 
-    <routing_service name="file_to_file">
-        <annotation>
-            <documentation>
-                This configuration takes a file as plugin property, reads its contents\
-                and place them in another file using the C adapter.
-            </documentation>
-        </annotation>
-
-        <domain_route>
-            <connection name="1" plugin_name="adapters::file">
-                <!-- Types must be registered in connections AND inputs/outputs using them-->
-                <registered_type name="ShapeType" type_name="ShapeType"/>
-            </connection>
-
-            <session name="ff">
-                <route name="filefile">
-                    <input connection="1">
-                        <creation_mode>IMMEDIATE</creation_mode>
-                        <registered_type_name>ShapeType</registered_type_name>
-                        <property>
-                            <value>
-                                <element>
-                                    <name>example.adapter.input_file</name>
-                                    <value>Input_$(SHAPE_TOPIC).csv</value>
-                                </element>
-                                <!-- How often we read samples from the file (ms) -->
-                                <element>
-                                    <name>example.adapter.sample_period_millisec</name>
-                                    <value>1000</value>
-                                </element>
-                            </value>
-                        </property>
-                    </input>
-
-                    <output connection="1">
-                        <registered_type_name>ShapeType</registered_type_name>
-                        <creation_mode>ON_ROUTE_MATCH</creation_mode>
-                        <property>
-                            <value>
-                                <element>
-                                    <name>example.adapter.output_file</name>
-                                    <value>Output_$(SHAPE_TOPIC).csv</value>
-                                </element>
-                                <!-- The write mode can be:
-                                        - overwrite (write in the file deleting previous content)
-                                        - append (write at then end of the file)
-                                        - keep (fail if the file already exists and don't modify it)
-                                -->
-                                <element>
-                                    <name>example.adapter.write_mode</name>
-                                    <value>overwrite</value>
-                                </element>
-                                <!-- Whether to flush the file after every sample is written. -->
-                                <element>
-                                    <name>example.adapter.flush</name>
-                                    <value>1</value>
-                                </element>
-                            </value>
-                        </property>
-                    </output>
-
-                </route>
-            </session>
-        </domain_route>
-    </routing_service>
-
-    <routing_service name="file_to_dds">
+    <routing_service name="FileAdapterToDDS">
 
         <annotation>
             <documentation>
@@ -162,7 +96,7 @@
         </domain_route>
     </routing_service>
 
-    <routing_service name="dds_to_file">
+    <routing_service name="DDSToFileAdapter">
 
         <annotation>
             <documentation>
@@ -223,6 +157,72 @@
                             </value>
                         </property>
                     </output>
+                </route>
+            </session>
+        </domain_route>
+    </routing_service>
+
+    <routing_service name="FileAdapterToFileAdapter">
+        <annotation>
+            <documentation>
+                This configuration takes a file as plugin property, reads its contents\
+                and place them in another file using the C adapter.
+            </documentation>
+        </annotation>
+
+        <domain_route>
+            <connection name="1" plugin_name="adapters::file">
+                <!-- Types must be registered in connections AND inputs/outputs using them-->
+                <registered_type name="ShapeType" type_name="ShapeType"/>
+            </connection>
+
+            <session name="ff">
+                <route name="filefile">
+                    <input connection="1">
+                        <creation_mode>IMMEDIATE</creation_mode>
+                        <registered_type_name>ShapeType</registered_type_name>
+                        <property>
+                            <value>
+                                <element>
+                                    <name>example.adapter.input_file</name>
+                                    <value>Input_$(SHAPE_TOPIC).csv</value>
+                                </element>
+                                <!-- How often we read samples from the file (ms) -->
+                                <element>
+                                    <name>example.adapter.sample_period_millisec</name>
+                                    <value>1000</value>
+                                </element>
+                            </value>
+                        </property>
+                    </input>
+
+                    <output connection="1">
+                        <registered_type_name>ShapeType</registered_type_name>
+                        <creation_mode>ON_ROUTE_MATCH</creation_mode>
+                        <property>
+                            <value>
+                                <element>
+                                    <name>example.adapter.output_file</name>
+                                    <value>Output_$(SHAPE_TOPIC).csv</value>
+                                </element>
+                                <!-- The write mode can be:
+                                        - overwrite (write in the file deleting previous content)
+                                        - append (write at then end of the file)
+                                        - keep (fail if the file already exists and don't modify it)
+                                -->
+                                <element>
+                                    <name>example.adapter.write_mode</name>
+                                    <value>overwrite</value>
+                                </element>
+                                <!-- Whether to flush the file after every sample is written. -->
+                                <element>
+                                    <name>example.adapter.flush</name>
+                                    <value>1</value>
+                                </element>
+                            </value>
+                        </property>
+                    </output>
+
                 </route>
             </session>
         </domain_route>
