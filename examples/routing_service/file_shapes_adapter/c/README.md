@@ -16,7 +16,7 @@ $ cmake -DCONNEXTDDS_DIR=<Connext DDS Directory> \
     -DCONNEXTDDS_ARCH=<Connext DDS Architecture> \
     -DBUILD_SHARED_LIBS=ON|OFF \
     -DCMAKE_BUILD_TYPE=Debug|Release .
-$ cmake --build build
+$ cmake --build ./build
 ```
 
 **Note:** Since this example uses the `pthread` library, it only works on
@@ -75,8 +75,8 @@ $ export RTI_LD_LIBRARY_PATH=<Connext DDS Directory>/lib/<Connext DDS Architectu
 
 ```bash
 # From the build/ directory
-$ <Connext DDS Directory>/bin/rtiroutingservice
--cfgFile RsFileAdapter.xml
+$ <Connext DDS Directory>/bin/rtiroutingservice \
+-cfgFile RsFileAdapter.xml \
 -cfgName <cfgName>
 ```
 The general behavior of this example can be controlled using properties and the

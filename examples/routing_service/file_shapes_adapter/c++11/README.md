@@ -40,7 +40,7 @@ $ cmake -B build\
    -DCONNEXTDDS_ARCH=<Connext DDS Architecture> \
    -DBUILD_SHARED_LIBS=ON|OFF \
    -DCMAKE_BUILD_TYPE=Debug|Release .
-$ cmake --build .build
+$ cmake --build ./build
 ```
 
 **Note**: when compiling on a Windows 64-bit machine you will need to add the
@@ -50,7 +50,7 @@ $ cmake --build .build
 Solutions, you can specify the configuration mode to build as follows:
 
 ```bash
-$ cmake --build . --config Release|Debug
+$ cmake --build ./build --config Release|Debug
 ```
 
 Here is more information about generating
@@ -174,9 +174,9 @@ Service configuration file. This is the list of available properties:
 | ---------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------|
 | `example.adapter.input_file`             | `<input>`  | Path to a CSV file that contains the sample data. File must exist and contain valid CSV data. |
 | `example.adapter.sample_period_millisec` | `<input>`  | Periodic rate of reading samples from the file                                                |
-| `example.adapter.sample_period_loop`     | `<input>`  | Whether to restart reading at the beginning of the file when it reach the end                 |
+| `example.adapter.loop`                   | `<input>`  | Whether to restart reading at the beginning of the file when it reach the end                 |
 | `example.adapter.output_file`            | `<output>` | Path to the file where to store the received samples                                          |
-| `example.adapter.write_mode`             | `<output>` | The write mode can be:<ul><li>overwrite (write in the file deleting previous content)</li><li>append (write at then end of the file)</li><li>keep (fail if the file already exists and don't modify it)</li></ul>|
+| `example.adapter.write_mode`             | `<output>` | The write mode can be:<ul><li>overwrite (write in the file deleting previous content)</li><li>append (write at then end of the file)</li><li>keep [Default] (fail if the file already exists and don't modify it)</li></ul>|
 | `example.adapter.flush`                  | `<output>` | Whether to flush the file after every sample is written.                                      |
 
 ## Requirements

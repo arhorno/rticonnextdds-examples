@@ -3,7 +3,7 @@
     xsi:noNamespaceSchemaLocation="https://community.rti.com/schema/7.0.0/rti_routing_service.xsd">
 
     <types>
-        <include file="ShapeType.xml" />
+        <include file="ShapeType.xml"/>
     </types>
 
     <plugin_library name="AdapterLib">
@@ -17,12 +17,12 @@
                 - Executable directory
                 - Environment library path
             -->
-            <dll>FileAdapterC++11</dll>
+            <dll>build/FileAdapterC++11</dll>
             <create_function>FileAdapter_create_adapter_plugin</create_function>
         </adapter_plugin>
     </plugin_library>
 
-    <!-- Demonstrates a scenario where the FileAdapter reads squares data from a file
+    <!-- Demonstrates a scenario where the FileAdapter reads shape data from a file
             and the DDSAdapter writes it to a DDS domain which can be subscribed to in
             Shapes Demo or using 'rtiddsspy -printSample' -->
     <routing_service name="FileAdapterToDDS">
@@ -45,17 +45,18 @@
                                 <!-- The file from which to read -->
                                 <element>
                                     <name>example.adapter.input_file</name>
-                                    <value>input.csv</value>
+                                    <value>Input_$(SHAPE_TOPIC).csv</value>
                                 </element>
                                 <!-- How often we read samples from the file (ms) -->
                                 <element>
                                     <name>example.adapter.sample_period_millisec</name>
-                                    <value>1000</value>
+                                    <value>10</value>
                                 </element>
-                                <!-- How many samples we will take from the file every ReadPeriod -->
+                                <!-- Whether to restart reading at the beginning of the file when it
+                                reach the end-->
                                 <element>
-                                    <name>example.adapter.samples_per_read</name>
-                                    <value>2</value>
+                                    <name>example.adapter.loop</name>
+                                    <value>yes</value>
                                 </element>
                             </value>
                         </property>
@@ -94,12 +95,27 @@
                         <stream_name>$(SHAPE_TOPIC)</stream_name>
                         <property>
                             <value>
+                                <!-- The file to write in-->
                                 <element>
                                     <name>example.adapter.output_file</name>
                                     <value>Output_$(SHAPE_TOPIC).csv</value>
                                 </element>
+
+                                <!-- How to open and write in the file-->
+                                <element>
+                                    <name>example.adapter.write_mode</name>
+                                    <value>overwrite</value>
+                                </element>
+
+                                <!-- Whether to call ostream::flush() when writing a sample in the
+                                file-->
+                                <element>
+                                    <name>example.adapter.flush</name>
+                                    <value>true</value>
+                                </element>
                             </value>
                         </property>
+
                     </output>
                 </route>
             </session>
